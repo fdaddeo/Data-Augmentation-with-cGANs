@@ -9,7 +9,7 @@ from torch.utils.data.dataloader import DataLoader
 from torchvision.transforms import transforms
 from torchvision.datasets import CIFAR10
 
-from model import Net
+from cGAN.model import Net
 
 def argparser():
     args = argparse.ArgumentParser()
@@ -17,6 +17,7 @@ def argparser():
     args.add_argument('--run_name', type=str, help='The name of the run will be used to store the results.', required=True)
 
     args.add_argument('--image_size', type=int, default=32, help='The resized dimension of the images.', required=False)
+    args.add_argument('--image_channel', type=int, default=3, help='The number of channels in the inpt images.', required=False)
     args.add_argument('--workers', type=int, default=2, help='Number of workers in data loader.', required=False)
 
     args.add_argument('--epochs', type=int, default=100, help='Number of epochs.', required=False)
@@ -52,6 +53,6 @@ def main(args):
 if __name__ == "__main__":
     # To suppress tensorflow warnings
     os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
-    
+
     args = argparser()
     main(args)
