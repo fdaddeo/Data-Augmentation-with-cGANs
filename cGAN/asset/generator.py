@@ -17,27 +17,57 @@ class Generator(NN.Module):
         super(Generator, self).__init__()
 
         self.noise_block = NN.Sequential(
-            NN.ConvTranspose2d(args.latentspace_dim, args.gen_featuremap_dim * 2, 4, 1, 0, bias=False), # bs, 100, 1, 1 -> bs, args.gen_featuremap_dim * 2, 4, 4
+            NN.ConvTranspose2d(in_channels=args.latentspace_dim,
+                               out_channels=args.gen_featuremap_dim * 2,
+                               kernel_size=4,
+                               stride=1,
+                               padding=0,
+                               bias=False
+                              ),
             NN.BatchNorm2d(args.gen_featuremap_dim * 2),
             NN.ReLU(True)
-         )
+        )
         
         self.label_block = NN.Sequential(
-            NN.ConvTranspose2d(args.num_label, args.gen_featuremap_dim * 2, 4, 1, 0, bias=False), #bs, 10, 1, 1 -> bs, args.gen_featuremap_dim * 2, 4, 4
+            NN.ConvTranspose2d(in_channels=args.num_label,
+                               out_channels=args.gen_featuremap_dim * 2,
+                               kernel_size=4, 
+                               stride=1,
+                               padding=0,
+                               bias=False
+                              ),
             NN.BatchNorm2d(args.gen_featuremap_dim * 2),
             NN.ReLU(True)
-         )
+        )
         
         self.main = NN.Sequential(
-            NN.ConvTranspose2d( args.gen_featuremap_dim * 4, args.gen_featuremap_dim * 2, 4, 2, 1, bias=False),
+            NN.ConvTranspose2d(in_channels=args.gen_featuremap_dim * 4,
+                               out_channels=args.gen_featuremap_dim * 2, 
+                               kernel_size=4,
+                               stride=2,
+                               padding=1,
+                               bias=False
+                              ),
             NN.BatchNorm2d(args.gen_featuremap_dim * 2),
             NN.ReLU(True),
 
-            NN.ConvTranspose2d( args.gen_featuremap_dim * 2, args.gen_featuremap_dim, 4, 2, 1, bias=False),
+            NN.ConvTranspose2d(in_channels=args.gen_featuremap_dim * 2, 
+                               out_channels=args.gen_featuremap_dim,
+                               kernel_size=4,
+                               stride=2,
+                               padding=1, 
+                               bias=False
+                              ),
             NN.BatchNorm2d(args.gen_featuremap_dim),
             NN.ReLU(True),
             
-            NN.ConvTranspose2d(args.gen_featuremap_dim, args.num_image_channels, 4, 2, 1, bias=False),
+            NN.ConvTranspose2d(in_channels=args.gen_featuremap_dim,
+                               out_channels=args.num_image_channels,
+                               kernel_size=4,
+                               stride=2,
+                               padding=1,
+                               bias=False
+                              ),
             NN.Tanh()
         )
 
