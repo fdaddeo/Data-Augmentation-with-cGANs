@@ -42,11 +42,11 @@ class Generator(NN.Module):
         )
 
     def forward(self, noise, labels):
-        # first lets pass the noise and the labels...
-        # through the corresponding layers
+        # First lets pass the noise and the labels through the corresponding layers ...
         z_out = self.noise_block(noise)
         l_out = self.label_block(labels)
-        # then concatenate them and fed the output to the rest of the generator
-        x = torch.cat([z_out, l_out], dim = 1) # concatenation over chaNNels
-        # bs, args.gen_featuremap_dim*4, 4, 4
+        
+        # ... then concatenate them over the channels and fed the output to the rest of the generator.
+        x = torch.cat([z_out, l_out], dim = 1)
+        
         return self.main(x)
