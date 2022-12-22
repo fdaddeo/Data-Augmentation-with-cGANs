@@ -11,7 +11,7 @@ class Discriminator(NN.Module):
         Parameters
         ----------
         args : dict
-            The argument parsed on program launch.
+            The arguments parsed on program launch.
         """
 
         super(Discriminator, self).__init__()

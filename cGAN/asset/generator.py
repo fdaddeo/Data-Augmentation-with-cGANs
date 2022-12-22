@@ -11,7 +11,7 @@ class Generator(NN.Module):
         Parameters
         ----------
         args : dict
-            The argument parsed on program launch.
+            The arguments parsed on program launch.
         """
 
         super(Generator, self).__init__()
