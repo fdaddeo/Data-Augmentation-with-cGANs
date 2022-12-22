@@ -6,7 +6,7 @@ class Generator(NN.Module):
     This class represents the generator of the cGAN.
     """
 
-    def __init__(self, args):
+    def __init__(self, args: dict):
         """
         Parameters
         ----------
