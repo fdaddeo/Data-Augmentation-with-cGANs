@@ -9,8 +9,6 @@ from torch.utils.data.dataloader import DataLoader
 from torchvision.transforms import transforms
 from torchvision.datasets import CIFAR10
 
-from cGAN.model import Net
-
 def argparser():
     args = argparse.ArgumentParser()
 
