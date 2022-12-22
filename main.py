@@ -15,8 +15,13 @@ def argparser():
     args.add_argument('--run_name', type=str, help='The name of the run will be used to store the results.', required=True)
 
     args.add_argument('--image_size', type=int, default=32, help='The resized dimension of the images.', required=False)
-    args.add_argument('--image_channel', type=int, default=3, help='The number of channels in the inpt images.', required=False)
-    args.add_argument('--workers', type=int, default=2, help='Number of workers in data loader.', required=False)
+    args.add_argument('--num_image_channels', type=int, default=3, help='The number of channels in the inpt images.', required=False)
+    args.add_argument('--num_label', type=int, default=10, help='Number of labels.', required=False)
+    args.add_argument('--num_workers', type=int, default=2, help='Number of workers in data loader.', required=False)
+
+    args.add_argument('--latentspace_dim', type=int, default=100, help='The dimension of the latent space in the model.', required=False)
+    args.add_argument('--gen_featuremap_dim', type=int, default=64, help='Dimension of the feature map in the generator.', required=False)
+    args.add_argument('--dis_featuremap_dim', type=int, default=64, help='Dimension of the feature map in the discriminator.', required=False)
 
     args.add_argument('--epochs', type=int, default=100, help='Number of epochs.', required=False)
     args.add_argument('--batch_size', type=int, default=16, help='Number of elements in batch size.', required=False)
@@ -42,7 +47,7 @@ def main(args):
     cifar10_dataloader = DataLoader(dataset=cifar10_dataset,
                                     batch_size=args.batch_size,
                                     shuffle=True,
-                                    num_workers=args.workers)
+                                    num_workers=args.num_workers)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print(f"Code will be executed on {device}")
