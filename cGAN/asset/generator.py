@@ -6,63 +6,69 @@ class Generator(NN.Module):
     This class represents the generator of the cGAN.
     """
 
-    def __init__(self, args: dict):
+    def __init__(self, config: dict, num_label: int, image_channels: int):
         """
         Parameters
         ----------
-        args : dict
-            The arguments parsed on program launch.
+        config : dict
+            The options for the generator contained in the configuration file.
+
+        num_label : int
+            The number of labels.
+
+        image_channels : int
+            The number of channels of the images.
         """
 
         super(Generator, self).__init__()
 
         self.noise_block = NN.Sequential(
-            NN.ConvTranspose2d(in_channels=args.latentspace_dim,
-                               out_channels=args.gen_featuremap_dim * 2,
+            NN.ConvTranspose2d(in_channels=config['latentspace_dim'],
+                               out_channels=config['featuremap_dim'] * 2,
                                kernel_size=4,
                                stride=1,
                                padding=0,
                                bias=False
                               ),
-            NN.BatchNorm2d(args.gen_featuremap_dim * 2),
+            NN.BatchNorm2d(config['featuremap_dim'] * 2),
             NN.ReLU(True)
         )
         
         self.label_block = NN.Sequential(
-            NN.ConvTranspose2d(in_channels=args.num_label,
-                               out_channels=args.gen_featuremap_dim * 2,
+            NN.ConvTranspose2d(in_channels=num_label,
+                               out_channels=config['featuremap_dim'] * 2,
                                kernel_size=4, 
                                stride=1,
                                padding=0,
                                bias=False
                               ),
-            NN.BatchNorm2d(args.gen_featuremap_dim * 2),
+            NN.BatchNorm2d(config['featuremap_dim'] * 2),
             NN.ReLU(True)
         )
         
         self.main = NN.Sequential(
-            NN.ConvTranspose2d(in_channels=args.gen_featuremap_dim * 4,
-                               out_channels=args.gen_featuremap_dim * 2, 
+            NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 4,
+                               out_channels=config['featuremap_dim'] * 2, 
                                kernel_size=4,
                                stride=2,
                                padding=1,
                                bias=False
                               ),
-            NN.BatchNorm2d(args.gen_featuremap_dim * 2),
+            NN.BatchNorm2d(config['featuremap_dim'] * 2),
             NN.ReLU(True),
 
-            NN.ConvTranspose2d(in_channels=args.gen_featuremap_dim * 2, 
-                               out_channels=args.gen_featuremap_dim,
+            NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 2, 
+                               out_channels=config['featuremap_dim'],
                                kernel_size=4,
                                stride=2,
                                padding=1, 
                                bias=False
                               ),
-            NN.BatchNorm2d(args.gen_featuremap_dim),
+            NN.BatchNorm2d(config['featuremap_dim']),
             NN.ReLU(True),
             
-            NN.ConvTranspose2d(in_channels=args.gen_featuremap_dim,
-                               out_channels=args.num_image_channels,
+            NN.ConvTranspose2d(in_channels=config['featuremap_dim'],
+                               out_channels=image_channels,
                                kernel_size=4,
                                stride=2,
                                padding=1,

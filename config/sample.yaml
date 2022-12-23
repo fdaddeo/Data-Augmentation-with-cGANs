@@ -1,0 +1,28 @@
+# Generator settings
+gen:
+  latentspace_dim: 100                                  # Dimension of the latent space in the generator model.
+  featuremap_dim: 64                                    # Dimension of the feature map in the generator model.
+
+# Discriminator settings
+dis:
+  latentspace_dim: 100                                  # Dimension of the latent space in the discriminator model.
+  featuremap_dim: 64                                    # Dimension of the feature map in the discriminator model.
+
+# Training settings
+epochs: 100                                             # Number of epochs.
+batch_size: 16                                          # Dimension of the batch.
+learning_rate: 0.001                                    # Initial learning rate.
+loss: BCE                                               # Loss to be used.
+alpha: 10                                               # Alpha hyper-parameter for Wassertein Loss.
+optimizer: Adam                                         # Optimizer to be used.
+beta: 0.5                                               # Beta hyper-parameter for Adam optimizers
+
+# Data settings
+image_size: 32                                          # Dimension of the images.
+image_channels: 3                                       # Number of channels in the input images.
+num_label: 10                                           # Number of labels.
+num_workers: 2                                          # Number of workers in data loader.
+tensorboard_path: ../results/Tensorboard/               # Path to the tensorboard writer.
+dataset_path: ../data/                                  # Path where it is located the dataset.
+gen_checkpoint_path: ../results/Models/Generator        # Path in which save the generator models.
+dis_checkpoint_path: ../results/Models/Discriminator    # Path in which save the discriminator models.

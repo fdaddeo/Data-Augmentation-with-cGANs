@@ -6,19 +6,25 @@ class Discriminator(NN.Module):
     This class represents the discriminator of the cGAN.
     """
 
-    def __init__(self, args: dict):
+    def __init__(self, config: dict, num_label: int, image_channels: int):
         """
         Parameters
         ----------
-        args : dict
-            The arguments parsed on program launch.
+        config : dict
+            The options for the generator contained in the configuration file.
+
+        num_label : int
+            The number of labels.
+
+        image_channels : int
+            The number of channels of the images.
         """
 
         super(Discriminator, self).__init__()
 
         self.img_block = NN.Sequential(
-            NN.Conv2d(in_channels=args.num_image_channels, 
-                      out_channels=args.dis_featuremap_dim//2, 
+            NN.Conv2d(in_channels=image_channels, 
+                      out_channels=config['featuremap_dim'] // 2, 
                       kernel_size=4, 
                       stride=2, 
                       padding=1, 
@@ -28,8 +34,8 @@ class Discriminator(NN.Module):
         )
 
         self.label_block = NN.Sequential(
-            NN.Conv2d(in_channels=args.num_label, 
-                      out_channels=args.dis_featuremap_dim//2, 
+            NN.Conv2d(in_channels=num_label, 
+                      out_channels=config['featuremap_dim'] // 2, 
                       kernel_size=4, 
                       stride=2, 
                       padding=1, 
@@ -39,25 +45,25 @@ class Discriminator(NN.Module):
         )
 
         self.main = NN.Sequential(
-            NN.Conv2d(in_channels=args.dis_featuremap_dim, 
-                      out_channels=args.dis_featuremap_dim * 2, 
+            NN.Conv2d(in_channels=config['featuremap_dim'], 
+                      out_channels=config['featuremap_dim'] * 2, 
                       kernel_size=4, 
                       stride=2, 
                       padding=1, 
                       bias=False
                      ),
-            NN.BatchNorm2d(args.dis_featuremap_dim * 2),
+            NN.BatchNorm2d(config['featuremap_dim'] * 2),
             NN.LeakyReLU(0.2, inplace=True),
-            NN.Conv2d(in_channels=args.dis_featuremap_dim * 2, 
-                      out_channels=args.dis_featuremap_dim * 4, 
+            NN.Conv2d(in_channels=config['featuremap_dim'] * 2, 
+                      out_channels=config['featuremap_dim'] * 4, 
                       kernel_size=4, 
                       stride=2, 
                       padding=1, 
                       bias=False
                      ),
-            NN.BatchNorm2d(args.dis_featuremap_dim * 4),
+            NN.BatchNorm2d(config['featuremap_dim'] * 4),
             NN.LeakyReLU(0.2, inplace=True),
-            NN.Conv2d(in_channels=args.dis_featuremap_dim * 4, 
+            NN.Conv2d(in_channels=config['featuremap_dim'] * 4, 
                       out_channels=1, 
                       kernel_size=4, 
                       stride=1, 
