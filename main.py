@@ -65,6 +65,8 @@ def main(args):
                       args=args,
                       config=config)
 
+    trainer.train()
+
 if __name__ == "__main__":
     # To suppress tensorflow warnings
     os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
