@@ -22,6 +22,7 @@ class Generator(NN.Module):
 
         super(Generator, self).__init__()
 
+        # Noise block
         self.noise_block = NN.Sequential(
             NN.ConvTranspose2d(in_channels=config['latentspace_dim'],
                                out_channels=config['featuremap_dim'] * 2,
@@ -29,11 +30,21 @@ class Generator(NN.Module):
                                stride=1,
                                padding=0,
                                bias=False
-                              ),
-            NN.BatchNorm2d(config['featuremap_dim'] * 2),
-            NN.ReLU(True)
+                              )
         )
         
+        if config['use_batch_norm']:
+            self.noise_block.append(
+                NN.BatchNorm2d(config['featuremap_dim'] * 2)
+            )
+        elif config['use_instance_norm']:
+            self.noise_block.append(
+                NN.InstanceNorm2d(config['featuremap_dim'] * 2, affine=True)
+            )
+
+        self.noise_block.append(NN.ReLU(True))
+        
+        # Label block
         self.label_block = NN.Sequential(
             NN.ConvTranspose2d(in_channels=num_label,
                                out_channels=config['featuremap_dim'] * 2,
@@ -41,11 +52,23 @@ class Generator(NN.Module):
                                stride=1,
                                padding=0,
                                bias=False
-                              ),
-            NN.BatchNorm2d(config['featuremap_dim'] * 2),
+                              )
+        )
+
+        if config['use_batch_norm']:
+            self.label_block.append(
+                NN.BatchNorm2d(config['featuremap_dim'] * 2)
+            )
+        elif config['use_instance_norm']:
+            self.label_block.append(
+                NN.InstanceNorm2d(config['featuremap_dim'] * 2, affine=True)
+            )
+            
+        self.label_block.append(
             NN.ReLU(True)
         )
         
+        # Main block
         self.main = NN.Sequential(
             NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 4,
                                out_channels=config['featuremap_dim'] * 2, 
@@ -53,27 +76,52 @@ class Generator(NN.Module):
                                stride=2,
                                padding=1,
                                bias=False
-                              ),
-            NN.BatchNorm2d(config['featuremap_dim'] * 2),
-            NN.ReLU(True),
+                              )
+        )
+        if config['use_batch_norm']:
+            self.main.append(
+                NN.BatchNorm2d(config['featuremap_dim'] * 2)
+            )
+        elif config['use_instance_norm']:
+            self.main.append(
+                NN.InstanceNorm2d(config['featuremap_dim'] * 2, affine=True)
+            )
 
+        self.main.append(
+            NN.ReLU(True)
+        )
+        self.main.append(
             NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 2, 
                                out_channels=config['featuremap_dim'],
                                kernel_size=4,
                                stride=2,
                                padding=1, 
                                bias=False
-                              ),
-            NN.BatchNorm2d(config['featuremap_dim']),
-            NN.ReLU(True),
-            
+                              )
+        )
+
+        if config['use_batch_norm']:
+            self.main.append(
+                NN.BatchNorm2d(config['featuremap_dim'])
+            )
+        elif config['use_instance_norm']:
+            self.main.append(
+                NN.InstanceNorm2d(config['featuremap_dim'], affine=True)
+            )
+
+        self.main.append(
+            NN.ReLU(True)
+        )
+        self.main.append(            
             NN.ConvTranspose2d(in_channels=config['featuremap_dim'],
                                out_channels=image_channels,
                                kernel_size=4,
                                stride=2,
                                padding=1,
                                bias=False
-                              ),
+                              )
+        )
+        self.main.append(
             NN.Tanh()
         )
 

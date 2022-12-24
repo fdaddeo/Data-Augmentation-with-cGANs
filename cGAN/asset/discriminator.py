@@ -20,6 +20,8 @@ class Discriminator(NN.Module):
             The number of channels of the images.
         """
 
+        # TODO: implement batch norm as generator
+
         super(Discriminator, self).__init__()
 
         self.img_block = NN.Sequential(
@@ -51,25 +53,54 @@ class Discriminator(NN.Module):
                       stride=2, 
                       padding=1, 
                       bias=False
-                     ),
-            NN.BatchNorm2d(config['featuremap_dim'] * 2),
-            NN.LeakyReLU(0.2, inplace=True),
+                     )
+        )
+
+        if config['use_batch_norm']:
+            self.main.append(
+                NN.BatchNorm2d(config['featuremap_dim'] * 2)
+            )
+        elif config['use_instance_norm']:
+            self.main.append(
+                NN.InstanceNorm2d(config['featuremap_dim'] * 2, affine=True)
+            )
+
+        self.main.append(
+            NN.LeakyReLU(0.2, inplace=True)
+        )
+        self.main.append(
             NN.Conv2d(in_channels=config['featuremap_dim'] * 2, 
                       out_channels=config['featuremap_dim'] * 4, 
                       kernel_size=4, 
                       stride=2, 
                       padding=1, 
                       bias=False
-                     ),
-            NN.BatchNorm2d(config['featuremap_dim'] * 4),
-            NN.LeakyReLU(0.2, inplace=True),
+                     )
+        )
+
+        if config['use_batch_norm']:
+            self.main.append(
+                NN.BatchNorm2d(config['featuremap_dim'] * 4)
+            )
+        elif config['use_instance_norm']:
+            self.main.append(
+                NN.InstanceNorm2d(config['featuremap_dim'] * 4, affine=True)
+            )
+
+        self.main.append(
+            NN.LeakyReLU(0.2, inplace=True)
+        )
+        self.main.append(
             NN.Conv2d(in_channels=config['featuremap_dim'] * 4, 
                       out_channels=1, 
                       kernel_size=4, 
                       stride=1, 
                       padding=0, 
                       bias=False
-                     ),
+                     )
+        )
+
+        self.main.append(
             NN.Sigmoid()
         )
 

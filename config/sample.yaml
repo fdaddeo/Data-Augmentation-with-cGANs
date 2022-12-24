@@ -2,14 +2,22 @@
 gen:
   latentspace_dim: 100                                  # Dimension of the latent space in the generator model.
   featuremap_dim: 64                                    # Dimension of the feature map in the generator model.
+  use_batch_norm: true                                  # Specify to use batch normalization.
+  use_instance_norm: false                              # Specify to use instance normalization.
+                                                        # If both are false then it will be used no normalization.
+                                                        # If both are true then it will be throw an error.
 
 # Discriminator settings
 dis:
   latentspace_dim: 100                                  # Dimension of the latent space in the discriminator model.
   featuremap_dim: 64                                    # Dimension of the feature map in the discriminator model.
+  use_batch_norm: true                                  # Specify to use batch normalization.
+  use_instance_norm: false                              # Specify to use instance normalization.
+                                                        # If both are false then it will be used no normalization.
+                                                        # If both are true then it will be throw an error.
 
 # Training settings
-epochs: 5                                             # Number of epochs.
+epochs: 5                                               # Number of epochs.
 batch_size: 16                                          # Dimension of the batch.
 learning_rate: 0.001                                    # Initial learning rate.
 loss: BCE                                               # Loss to be used.
