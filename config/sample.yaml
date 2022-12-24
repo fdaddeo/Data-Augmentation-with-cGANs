@@ -9,7 +9,7 @@ dis:
   featuremap_dim: 64                                    # Dimension of the feature map in the discriminator model.
 
 # Training settings
-epochs: 100                                             # Number of epochs.
+epochs: 5                                             # Number of epochs.
 batch_size: 16                                          # Dimension of the batch.
 learning_rate: 0.001                                    # Initial learning rate.
 loss: BCE                                               # Loss to be used.
@@ -22,7 +22,10 @@ image_size: 32                                          # Dimension of the image
 image_channels: 3                                       # Number of channels in the input images.
 num_label: 10                                           # Number of labels.
 num_workers: 2                                          # Number of workers in data loader.
+print_every: 50                                         # Print losses every N iteration.
+save_every: 1                                           # Save models every N epochs.
 tensorboard_path: ../results/Tensorboard/               # Path to the tensorboard writer.
+generated_images_path: ../results/Images/               # Path where to save the generated images.
 dataset_path: ../data/                                  # Path where it is located the dataset.
 gen_checkpoint_path: ../results/Models/Generator        # Path in which save the generator models.
 dis_checkpoint_path: ../results/Models/Discriminator    # Path in which save the discriminator models.
