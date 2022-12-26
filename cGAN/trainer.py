@@ -44,10 +44,12 @@ class Trainer(object):
 
         # Initialize Models
         self.generator = Generator(config=self.config['gen'],
+                                   args=self.args,
                                    num_label=self.config['num_label'],
                                    image_channels=self.config['image_channels']).to(self.device)
 
         self.discriminator = Discriminator(config=self.config['dis'],
+                                           args=self.args,
                                            num_label=self.config['num_label'],
                                            image_channels=self.config['image_channels']).to(self.device)
 
@@ -61,8 +63,8 @@ class Trainer(object):
         # Define Loss function
         if self.config['loss'] == 'BCE':
             self.criterion = NN.BCELoss()
-        elif self.config['loss'] == 'WAS':
-            self.criterion = "WAS"
+        else:
+            raise Exception(f"{self.config['loss']} not implemented. Please fix the configuration file.")
 
         # Define Optimizer
         if self.config['optimizer'] == 'Adam':
@@ -181,16 +183,12 @@ class Trainer(object):
 
     def train(self):
         """
-        Implements the training of the network.
+        Standard train function.
         """
 
-        # Lists to keep track of progress
-        img_list = []
-        G_losses = []
-        D_losses = []
         iters = 0
 
-        print("Starting Training Loop...")
+        print("Starting GAN Training Loop...")
 
         for epoch in range(self.config['epochs']):
             for idx, (image, label) in enumerate(self.train_loader, 0):
@@ -200,11 +198,11 @@ class Trainer(object):
 
                 ## First train with all-real batch
                 self.discriminator.zero_grad()
-                batch_size = image.size(0)
+                batch_dimension = image.size(0)
 
                 # Establish convention for real and fake labels during training
-                real_label = torch.ones(batch_size).to(self.device)
-                fake_label = torch.zeros(batch_size).to(self.device)
+                real_label = torch.ones(batch_dimension).to(self.device)
+                fake_label = torch.zeros(batch_dimension).to(self.device)
 
                 # Format batch
                 real_image = image.to(self.device)
@@ -222,10 +220,10 @@ class Trainer(object):
 
                 ## Then train with all-fake batch
                 # Generate batch of latent vectors
-                noise = torch.randn(batch_size, self.config['dis']['latentspace_dim'], 1, 1, device=self.device)
+                noise = torch.randn(batch_dimension, self.config['dis']['latentspace_dim'], 1, 1, device=self.device)
 
                 # Pick random label ang generate corresponding onehot
-                random_label = (torch.rand(batch_size) * self.config['num_label']).type(torch.LongTensor) # equivalent to int64 #[0,6,4,3,9]
+                random_label = (torch.rand(batch_dimension) * self.config['num_label']).type(torch.LongTensor) # equivalent to int64 #[0,6,4,3,9]
                 random_label_gen = self.gen_labels[random_label].to(self.device)
 
                 # Generate fake image batch with G
@@ -243,7 +241,7 @@ class Trainer(object):
                 discriminator_generator_z1 = output.mean().item()
 
                 # Compute error of Discriminator as sum over the fake and the real batches
-                error_dis_tot = error_dis_real + error_dis_fake
+                error_dis_total = error_dis_real + error_dis_fake
 
                 # Update Discriminator
                 self.optimizerD.step()
@@ -270,9 +268,9 @@ class Trainer(object):
                 # Output training stats
                 if idx % self.config['print_every'] == self.config['print_every'] - 1:
                     self.writer.add_scalar('generator loss', error_gen.item(), epoch * len(self.train_loader) + idx)
-                    self.writer.add_scalar('discriminator loss', error_dis_tot.item(), epoch * len(self.train_loader) + idx)
+                    self.writer.add_scalar('discriminator loss', error_dis_total.item(), epoch * len(self.train_loader) + idx)
 
-                    print(f"[{epoch}/{self.config['epochs']}][{idx}/{len(self.train_loader)}]\tLoss_D: {error_dis_tot.item()}\tLoss_G: {error_gen.item()}\tD(x): {discriminator_x}\tD(G(z)): {discriminator_generator_z1} / {discriminator_generator_z2}")
+                    print(f"[{epoch}/{self.config['epochs']}][{idx}/{len(self.train_loader)}]\tLoss_D: {error_dis_total.item()}\tLoss_G: {error_gen.item()}\tD(x): {discriminator_x}\tD(G(z)): {discriminator_generator_z1} / {discriminator_generator_z2}")
 
                 # Check how the generator is doing by saving G's output on fixed_noise
                 if (iters % 250 == 0) or ((epoch == self.config['epochs'] - 1) and (idx == len(self.train_loader) - 1)):
@@ -280,7 +278,6 @@ class Trainer(object):
                         fake = self.generate_test(self.fixed_noise).detach().cpu()
                 
                     im_grid = vutils.make_grid(fake, padding=2, normalize=True)
-                    img_list.append(im_grid)
                     vutils.save_image(im_grid, os.path.join(self.config['generated_images_path'], f"{epoch}_{iters}.jpg"))
 
                 iters += 1
@@ -289,6 +286,110 @@ class Trainer(object):
                 self.save_models()
 
         # TODO: implement early stopping and ReduceLROnPlateau
+
+        self.writer.flush()
+        self.writer.close()
+        print("Finished Training")
+
+    def train_wassertein(self):
+        """
+        Train function called when it has been selected the Wassertein Loss.
+        """
+
+        iters = 0
+
+        print("Starting WGAN Training Loop...")
+
+        for epoch in range(self.config['epochs']):
+            for idx, (image, label) in enumerate(self.train_loader, 0):
+                ############################
+                # (1) Update Discriminator network: maximize log(D(x)) + log(1 - D(G(z)))
+                ###########################
+                
+                ## First train with all-real batch
+                self.discriminator.zero_grad()
+                batch_dimension = image.size(0)
+
+                # Format batch
+                real_image = image.to(self.device)
+                real_label_dis = self.dis_labels[label].to(self.device)
+
+                # Forward pass real batch through Discriminator
+                output = self.discriminator(real_image, real_label_dis).view(-1)
+
+                # Calculate loss on all-real batch
+                error_dis_real = - torch.mean(output)
+                discriminator_x = output.mean().item()
+
+                ## Then train with all-fake batch
+                # Generate batch of latent vectors
+                noise = torch.randn(batch_dimension, self.config['dis']['latentspace_dim'], 1, 1, device=self.device)
+                random_label_gen = self.gen_labels[label].to(self.device)
+
+                # Generate fake image batch with Generator
+                fake_image = self.generator(noise, random_label_gen)
+
+                # Classify all fake batch with Discriminator
+                random_label_dis = self.dis_labels[label].to(self.device)
+                output = self.discriminator(fake_image.detach(), random_label_dis).view(-1)
+
+                # Calculate Discriminator's loss on the all-fake batch
+                error_dis_fake = torch.mean(output)
+
+                # Calculate the gradient penalty
+                alpha = torch.rand(real_image.size(0), 1, 1, 1).to(self.device) # alpha * x + (1 - alpha) * x_2
+                x_hat = (alpha * real_image.data + (1 - alpha) * fake_image.data).requires_grad_(True)
+                output = self.discriminator(x_hat, random_label_dis)
+                discriminator_loss_gp = self.gradient_penalty(output, x_hat)
+
+                # Backpropagate loss
+                total_dis_loss = error_dis_real + error_dis_fake + self.config['alpha'] * discriminator_loss_gp
+                total_dis_loss.backward()
+
+                discriminator_generator_z1 = output.mean().item()
+                
+                # Compute error of Discriminator as sum over the fake and the real batches
+                error_dis_total = error_dis_real + error_dis_fake
+                
+                # Update Discriminator
+                self.optimizerD.step()
+
+                ############################
+                # (2) Update Generator network: maximize log(D(G(z)))
+                ###########################
+                
+                self.generator.zero_grad()
+
+                # Since we just updated Discriminator, perform another forward pass of all-fake batch through Discriminator
+                output = self.discriminator(fake_image, random_label_dis).view(-1)
+
+                # Calculate Generator's loss based on this output
+                error_gen = - torch.mean(output)
+
+                # Calculate gradients for G
+                error_gen.backward()
+                discriminator_generator_z2 = output.mean().item()
+
+                # Update G
+                self.optimizerG.step()
+
+                if idx % self.config['print_every'] == self.config['print_every'] - 1:
+                    self.writer.add_scalar('generator loss', error_gen.item(), epoch * len(self.train_loader) + idx)
+                    self.writer.add_scalar('discriminator loss', error_dis_total.item(), epoch * len(self.train_loader) + idx)
+                    print(f"[{epoch}/{self.config['epochs']}][{idx}/{len(self.train_loader)}]\tLoss_D: {error_dis_total.item()}\tLoss_G: {error_gen.item()}\tD(x): {discriminator_x}\tD(G(z)): {discriminator_generator_z1} / {discriminator_generator_z2}")
+
+                # Check how the generator is doing by saving G's output on fixed_noise
+                if (iters % 250 == 0) or ((epoch == self.config['epochs'] - 1) and (idx == len(self.train_loader) - 1)):
+                    with torch.no_grad():
+                        fake = self.generate_test(self.fixed_noise).detach().cpu()
+                    
+                    im_grid = vutils.make_grid(fake, padding=2, normalize=True)
+                    vutils.save_image(im_grid, os.path.join(self.config['generated_images_path'], f"{epoch}_{iters}.jpg"))
+
+                iters += 1
+            
+            if ((epoch % self.config['save_every'] == 0) or (epoch == self.config['epochs'] - 1)):
+                self.save_models()
 
         self.writer.flush()
         self.writer.close()

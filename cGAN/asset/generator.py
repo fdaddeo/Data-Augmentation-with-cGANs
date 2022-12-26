@@ -6,12 +6,15 @@ class Generator(NN.Module):
     This class represents the generator of the cGAN.
     """
 
-    def __init__(self, config: dict, num_label: int, image_channels: int):
+    def __init__(self, config: dict, args: dict, num_label: int, image_channels: int):
         """
         Parameters
         ----------
         config : dict
             The options for the generator contained in the configuration file.
+
+        args : dict
+            The arguments passed as program launch.
 
         num_label : int
             The number of labels.

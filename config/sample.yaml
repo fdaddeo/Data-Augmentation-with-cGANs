@@ -11,8 +11,8 @@ gen:
 dis:
   latentspace_dim: 100                                  # Dimension of the latent space in the discriminator model.
   featuremap_dim: 64                                    # Dimension of the feature map in the discriminator model.
-  use_batch_norm: true                                  # Specify to use batch normalization.
-  use_instance_norm: false                              # Specify to use instance normalization.
+  use_batch_norm: false                                  # Specify to use batch normalization.
+  use_instance_norm: true                              # Specify to use instance normalization.
                                                         # If both are false then it will be used no normalization.
                                                         # If both are true then it will be throw an error.
 

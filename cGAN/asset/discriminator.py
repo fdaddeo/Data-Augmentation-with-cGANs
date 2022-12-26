@@ -6,12 +6,15 @@ class Discriminator(NN.Module):
     This class represents the discriminator of the cGAN.
     """
 
-    def __init__(self, config: dict, num_label: int, image_channels: int):
+    def __init__(self, config: dict, args: dict, num_label: int, image_channels: int):
         """
         Parameters
         ----------
         config : dict
             The options for the generator contained in the configuration file.
+
+        args : dict
+            The arguments passed as program launch.
 
         num_label : int
             The number of labels.
@@ -19,8 +22,6 @@ class Discriminator(NN.Module):
         image_channels : int
             The number of channels of the images.
         """
-
-        # TODO: implement batch norm as generator
 
         super(Discriminator, self).__init__()
 
@@ -100,9 +101,10 @@ class Discriminator(NN.Module):
                      )
         )
 
-        self.main.append(
-            NN.Sigmoid()
-        )
+        if not args.wassertein_loss:
+            self.main.append(
+                NN.Sigmoid()
+            )
 
     def forward(self, img, label):
         # First lets pass the images and the labels through the corresponding layers ...
