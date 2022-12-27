@@ -2,6 +2,7 @@
 gen:
   latentspace_dim: 100                                              # Dimension of the latent space in the generator model.
   featuremap_dim: 64                                                # Dimension of the feature map in the generator model.
+  initialize_weight: true                                           # Specify if weights have to be initialize as suggested in cGAN paper or not.
   use_batch_norm: true                                              # Specify to use batch normalization.
   use_instance_norm: false                                          # Specify to use instance normalization.
                                                                     # If both are false then it will be used no normalization.
@@ -11,6 +12,7 @@ gen:
 dis:
   latentspace_dim: 100                                              # Dimension of the latent space in the discriminator model.
   featuremap_dim: 64                                                # Dimension of the feature map in the discriminator model.
+  initialize_weight: true                                           # Specify if weights have to be initialize as suggested in cGAN paper or not.
   use_batch_norm: true                                              # Specify to use batch normalization.
   use_instance_norm: false                                          # Specify to use instance normalization.
                                                                     # If both are false then it will be used no normalization.

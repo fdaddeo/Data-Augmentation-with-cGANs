@@ -57,8 +57,10 @@ class Trainer(object):
         self.fixed_noise = torch.randn(8, self.config['gen']['latentspace_dim'], 1, 1, device=device)
 
         # Apply the weight initialization according to the paper
-        self.generator.apply(self.weights_init)
-        self.discriminator.apply(self.weights_init)
+        if self.config['gen']['initialize_weight']:
+            self.generator.apply(self.weights_init)
+        if self.config['dis']['initialize_weight']:
+            self.discriminator.apply(self.weights_init)
 
         # Define Loss function
         if self.config['loss'] == 'BCE':
