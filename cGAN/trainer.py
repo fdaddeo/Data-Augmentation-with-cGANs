@@ -39,8 +39,8 @@ class Trainer(object):
         self.args = args
         self.config = config
 
-        self.generator_name = f"cgan_gen_{self.args.run_name}.pth"
-        self.discriminator_name = f"cgan_dis_{self.args.run_name}.pth"
+        self.generator_name = f"generator_{self.args.run_name}.pth"
+        self.discriminator_name = f"discriminator_{self.args.run_name}.pth"
 
         # Initialize Models
         self.generator = Generator(config=self.config['gen'],
