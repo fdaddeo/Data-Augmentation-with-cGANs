@@ -48,6 +48,10 @@ def main(args):
     config = get_config(args.config)
     writer = SummaryWriter(os.path.join(config['tensorboard_path'], args.run_name))
 
+    os.makedirs(config['generated_images_path'], exist_ok=True)
+    os.makedirs(config['gen_checkpoint_path'], exist_ok=True)
+    os.makedirs(config['dis_checkpoint_path'], exist_ok=True)
+
     transformList = transforms.Compose([transforms.Resize(config['image_size']),
                                         transforms.ToTensor(),
                                         transforms.Normalize(mean=(0.5,), std=(0.5,))])

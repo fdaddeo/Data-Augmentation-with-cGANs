@@ -39,8 +39,8 @@ class Trainer(object):
         self.args = args
         self.config = config
 
-        self.generator_name = f"generator_{self.args.run_name}.pth"
-        self.discriminator_name = f"discriminator_{self.args.run_name}.pth"
+        self.generator_name = f"generator_{self.args.run_name}"
+        self.discriminator_name = f"discriminator_{self.args.run_name}"
 
         # Initialize Models
         self.generator = Generator(config=self.config['gen'],
@@ -78,13 +78,18 @@ class Trainer(object):
         self.gen_labels = self.gen_label_preprocessing()
         self.dis_labels = self.dis_label_preprocessing()
 
-    def save_models(self):
+    def save_models(self, epoch: int):
         """
         Function that saves the models.
+
+        Parameters
+        ----------
+        epoch : int
+            The epoch in which the model was saved.
         """
 
-        pathG = os.path.join(self.config['gen_checkpoint_path'], self.generator_name)
-        pathD = os.path.join(self.config['dis_checkpoint_path'], self.discriminator_name)
+        pathG = os.path.join(self.config['gen_checkpoint_path'], f"{self.generator_name}_epoch_{epoch}.pth")
+        pathD = os.path.join(self.config['dis_checkpoint_path'], f"{self.discriminator_name}_epoch_{epoch}.pth")
         torch.save(self.generator.state_dict(), pathG)
         print("Generator Model saved!")
         torch.save(self.discriminator.state_dict(), pathD)
@@ -283,7 +288,7 @@ class Trainer(object):
                 iters += 1
             
             if ((epoch % self.config['save_every'] == 0) or (epoch == self.config['epochs'] - 1)):
-                self.save_models()
+                self.save_models(epoch)
 
         # TODO: implement early stopping and ReduceLROnPlateau
 
@@ -389,7 +394,7 @@ class Trainer(object):
                 iters += 1
             
             if ((epoch % self.config['save_every'] == 0) or (epoch == self.config['epochs'] - 1)):
-                self.save_models()
+                self.save_models(epoch)
 
         self.writer.flush()
         self.writer.close()
