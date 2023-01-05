@@ -9,7 +9,7 @@ from torch.utils.data.dataloader import DataLoader
 from torchvision.transforms import transforms
 from torchvision.datasets import CIFAR10
 
-from classifier.trainer import Trainer
+from classifier.trainer import FineTune
 
 def argparser():
     args = argparse.ArgumentParser()
@@ -44,9 +44,10 @@ def main(args):
 
     os.makedirs(config['model_path'], exist_ok=True)
 
-    transformList = transforms.Compose([transforms.Resize(config['image_size']),
+    # Required by inception_v3
+    transformList = transforms.Compose([transforms.Resize(299),
                                         transforms.ToTensor(),
-                                        transforms.Normalize(mean=(0.5,), std=(0.5,))])
+                                        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
 
     cifar10_dataset = CIFAR10(root=config['dataset_path'],
                               train=True,
@@ -61,11 +62,11 @@ def main(args):
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
     print(f"Code will be executed on {device}")
 
-    trainer = Trainer(writer=writer,
-                          train_loader=cifar10_dataloader,
-                          device=device,
-                          args=args,
-                          config=config)
+    trainer = FineTune(writer=writer,
+                       train_loader=cifar10_dataloader,
+                       device=device,
+                       args=args,
+                       config=config)
 
 if __name__ == "__main__":
     # To suppress tensorflow warnings
