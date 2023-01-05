@@ -1,5 +1,2 @@
 #Exclude Python folder
 __pycache__/
-
-# TEMP
-classifier/

@@ -75,6 +75,8 @@ class Trainer(object):
         elif self.config['optimizer'] == 'SGD':
             self.optimizerG = optim.SGD(self.generator.parameters(), lr=self.config['learning_rate'], momentum=0.9)
             self.optimizerD = optim.SGD(self.discriminator.parameters(), lr=self.config['learning_rate'], momentum=0.9)
+        else:
+            raise Exception(f"{self.config['optimizer']} not implemented. Please fix the configuration file.")
 
         # Perform label preprocessing
         self.gen_labels = self.gen_label_preprocessing()
@@ -160,7 +162,7 @@ class Trainer(object):
 
         return images
 
-    def generate_test(self, noise: torch.Tensor) -> torch.Tensor:
+    def generate_test(self, noise: torch.Tensor):
         """
         Function that generates test samples.
 
@@ -279,7 +281,7 @@ class Trainer(object):
 
                     print(f"[{epoch}/{self.config['epochs']}][{idx}/{len(self.train_loader)}]\tLoss_D: {error_dis_total.item()}\tLoss_G: {error_gen.item()}\tD(x): {discriminator_x}\tD(G(z)): {discriminator_generator_z1} / {discriminator_generator_z2}")
 
-                # Check how the generator is doing by saving G's output on fixed_noise
+                # Check how the generator is doing by saving Generator's output on fixed_noise
                 if (iters % 250 == 0) or ((epoch == self.config['epochs'] - 1) and (idx == len(self.train_loader) - 1)):
                     with torch.no_grad():
                         fake = self.generate_test(self.fixed_noise).detach().cpu()
@@ -385,7 +387,7 @@ class Trainer(object):
                     self.writer.add_scalar('discriminator loss', error_dis_total.item(), epoch * len(self.train_loader) + idx)
                     print(f"[{epoch}/{self.config['epochs']}][{idx}/{len(self.train_loader)}]\tLoss_D: {error_dis_total.item()}\tLoss_G: {error_gen.item()}\tD(x): {discriminator_x}\tD(G(z)): {discriminator_generator_z1} / {discriminator_generator_z2}")
 
-                # Check how the generator is doing by saving G's output on fixed_noise
+                # Check how the generator is doing by saving Generator's output on fixed_noise
                 if (iters % 250 == 0) or ((epoch == self.config['epochs'] - 1) and (idx == len(self.train_loader) - 1)):
                     with torch.no_grad():
                         fake = self.generate_test(self.fixed_noise).detach().cpu()

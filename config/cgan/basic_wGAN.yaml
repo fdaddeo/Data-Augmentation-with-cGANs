@@ -20,7 +20,6 @@ dis:
 
 # Training settings
 epochs: 100                                                         # Number of epochs.
-batch_size: 16                                                      # Dimension of the batch.
 learning_rate: 0.001                                                # Initial learning rate.
 loss: BCE                                                           # Loss to be used.
 alpha: 10                                                           # Alpha hyper-parameter for Wassertein Loss.
@@ -29,6 +28,7 @@ beta: 0.5                                                           # Beta hyper
 
 # Data settings
 image_size: 32                                                      # Dimension of the images.
+batch_size: 16                                                      # Dimension of the batch.
 image_channels: 3                                                   # Number of channels in the input images.
 num_label: 10                                                       # Number of labels.
 num_workers: 2                                                      # Number of workers in data loader.

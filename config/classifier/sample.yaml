@@ -1,0 +1,14 @@
+# Fine-tuninig settings
+
+
+# Data settings
+image_size: 32                                                      # Dimension of the images.
+batch_size: 16                                                      # Dimension of the batch.
+image_channels: 3                                                   # Number of channels in the input images.
+num_label: 10                                                       # Number of labels.
+num_workers: 2                                                      # Number of workers in data loader.
+print_every: 50                                                     # Print losses every N iteration.
+save_every: 1                                                       # Save model every N epochs.
+tensorboard_path: ../results/Tensorboard/                           # Path to the tensorboard writer.
+dataset_path: ../data/                                              # Path where it is located the dataset.
+model_path: ../results/classifier_sample/Models/Generator/          # Path in which save the generator models.
