@@ -133,13 +133,14 @@ class FineTune(object):
 
         running_loss = 0.0
         for idx, (image, label) in enumerate(self.train_loader, 0):
+            # Exit condition
             if idx > self.config['max_iter']:
                 break
 
-            # put data on correct device
+            # Data on correct device
             image, label = image.to(self.device), label.to(self.device)
 
-            # zero the parameter gradients
+            # Zero the parameter gradients
             self.optimizer.zero_grad()
 
             # forward + backward + optimize
