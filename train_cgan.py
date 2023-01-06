@@ -54,7 +54,7 @@ def main(args):
 
     transformList = transforms.Compose([transforms.Resize(config['image_size']),
                                         transforms.ToTensor(),
-                                        transforms.Normalize(mean=(0.5,), std=(0.5,))])
+                                        transforms.Normalize(mean=(0.4915, 0.4823, 0.4468), std=(0.2470, 0.2435, 0.2616))])
 
     cifar10_dataset = CIFAR10(root=config['dataset_path'],
                               train=True,
