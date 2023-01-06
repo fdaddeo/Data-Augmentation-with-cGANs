@@ -291,7 +291,7 @@ class Trainer(object):
 
                 iters += 1
             
-            if ((epoch % self.config['save_every'] == 0) or (epoch == self.config['epochs'] - 1)):
+            if ((epoch % self.config['save_every'] == self.config['save_every'] - 1) or (epoch == self.config['epochs'] - 1)):
                 self.save_models(epoch)
 
         # TODO: implement early stopping and ReduceLROnPlateau
@@ -397,7 +397,7 @@ class Trainer(object):
 
                 iters += 1
             
-            if ((epoch % self.config['save_every'] == 0) or (epoch == self.config['epochs'] - 1)):
+            if ((epoch % self.config['save_every'] == self.config['save_every'] - 1) or (epoch == self.config['epochs'] - 1)):
                 self.save_models(epoch)
 
         self.writer.flush()
