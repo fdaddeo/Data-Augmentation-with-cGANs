@@ -82,6 +82,10 @@ class Trainer(object):
         self.gen_labels = self.gen_label_preprocessing()
         self.dis_labels = self.dis_label_preprocessing()
 
+        print(self.generator)
+        print("\n\n")
+        print(self.discriminator)
+
     def save_models(self, epoch: int):
         """
         Function that saves the models.

@@ -16,7 +16,7 @@ def argparser():
 
     args.add_argument('--run_name', type=str, help='The name of the run will be used to store the results.', required=True)
     args.add_argument('--device', type=str, default='cuda:0', choices=['cuda:0', 'cpu'],help='Specify the device on which executes the training.', required=False)
-    args.add_argument('--config', type=str, default='./config/sample.yaml', help='Path to the configuration file.', required=False)
+    args.add_argument('--config', type=str, default='./config/cgan/basic_cGAN.yaml', help='Path to the configuration file.', required=False)
     args.add_argument('--wassertein_loss', action='store_true', help='Use wassertein loss instead the one specified in the configuration file.')
 
     return args.parse_args()
@@ -75,10 +75,10 @@ def main(args):
                           args=args,
                           config=config)
 
-    if args.wassertein_loss:
-        trainer.train_wassertein()
-    else:
-        trainer.train()
+    # if args.wassertein_loss:
+    #     trainer.train_wassertein()
+    # else:
+    #     trainer.train()
 
 if __name__ == "__main__":
     # To suppress tensorflow warnings

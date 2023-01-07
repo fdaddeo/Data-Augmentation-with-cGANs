@@ -25,6 +25,7 @@ class Discriminator(NN.Module):
 
         super(Discriminator, self).__init__()
 
+        ## Image block
         self.img_block = NN.Sequential(
             NN.Conv2d(in_channels=image_channels, 
                       out_channels=config['featuremap_dim'] // 2, 
@@ -36,6 +37,7 @@ class Discriminator(NN.Module):
             NN.LeakyReLU(0.2, inplace=True),
         )
 
+        ## Label block
         self.label_block = NN.Sequential(
             NN.Conv2d(in_channels=num_label, 
                       out_channels=config['featuremap_dim'] // 2, 
@@ -47,7 +49,8 @@ class Discriminator(NN.Module):
             NN.LeakyReLU(0.2, inplace=True),
         )
 
-        self.main = NN.Sequential(
+        ## Main block
+        to_add = [
             NN.Conv2d(in_channels=config['featuremap_dim'], 
                       out_channels=config['featuremap_dim'] * 2, 
                       kernel_size=4, 
@@ -55,56 +58,58 @@ class Discriminator(NN.Module):
                       padding=1, 
                       bias=False
                      )
-        )
+        ]
 
         if config['use_batch_norm']:
-            self.main.append(
-                NN.BatchNorm2d(config['featuremap_dim'] * 2)
-            )
+            to_add += [
+                NN.BatchNorm2d(config['featuremap_dim'] * 2),
+                NN.LeakyReLU(0.2, inplace=True),
+                NN.Conv2d(in_channels=config['featuremap_dim'] * 2, 
+                          out_channels=config['featuremap_dim'] * 4, 
+                          kernel_size=4, 
+                          stride=2, 
+                          padding=1, 
+                          bias=False
+                         ),
+                NN.BatchNorm2d(config['featuremap_dim'] * 4),
+                NN.LeakyReLU(0.2, inplace=True),
+                NN.Conv2d(in_channels=config['featuremap_dim'] * 4, 
+                          out_channels=1, 
+                          kernel_size=4, 
+                          stride=1, 
+                          padding=0, 
+                          bias=False
+                         )
+            ]
         elif config['use_instance_norm']:
-            self.main.append(
-                NN.InstanceNorm2d(config['featuremap_dim'] * 2, affine=True)
-            )
-
-        self.main.append(
-            NN.LeakyReLU(0.2, inplace=True)
-        )
-        self.main.append(
-            NN.Conv2d(in_channels=config['featuremap_dim'] * 2, 
-                      out_channels=config['featuremap_dim'] * 4, 
-                      kernel_size=4, 
-                      stride=2, 
-                      padding=1, 
-                      bias=False
-                     )
-        )
-
-        if config['use_batch_norm']:
-            self.main.append(
-                NN.BatchNorm2d(config['featuremap_dim'] * 4)
-            )
-        elif config['use_instance_norm']:
-            self.main.append(
-                NN.InstanceNorm2d(config['featuremap_dim'] * 4, affine=True)
-            )
-
-        self.main.append(
-            NN.LeakyReLU(0.2, inplace=True)
-        )
-        self.main.append(
-            NN.Conv2d(in_channels=config['featuremap_dim'] * 4, 
-                      out_channels=1, 
-                      kernel_size=4, 
-                      stride=1, 
-                      padding=0, 
-                      bias=False
-                     )
-        )
+            to_add += [
+                NN.InstanceNorm2d(config['featuremap_dim'] * 2, affine=True),
+                NN.LeakyReLU(0.2, inplace=True),
+                NN.Conv2d(in_channels=config['featuremap_dim'] * 2, 
+                          out_channels=config['featuremap_dim'] * 4, 
+                          kernel_size=4, 
+                          stride=2, 
+                          padding=1, 
+                          bias=False
+                         ),
+                NN.InstanceNorm2d(config['featuremap_dim'] * 4, affine=True),
+                NN.LeakyReLU(0.2, inplace=True),
+                NN.Conv2d(in_channels=config['featuremap_dim'] * 4, 
+                          out_channels=1, 
+                          kernel_size=4, 
+                          stride=1, 
+                          padding=0, 
+                          bias=False
+                         )
+            ]
 
         if not args.wassertein_loss:
-            self.main.append(
+            to_add += [
                 NN.Sigmoid()
-            )
+            ]
+
+        self.main = NN.Sequential(*to_add)
+        to_add.clear()
 
     def forward(self, img, label):
         # First lets pass the images and the labels through the corresponding layers ...
