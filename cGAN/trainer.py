@@ -26,6 +26,9 @@ class Trainer(object):
         train_loader : DataLoader
             The DataLoader for the train images.
 
+        device : torch.device
+            Device in which execute the code.
+
         args : dict
             The arguments passed as program launch.
 
