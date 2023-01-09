@@ -75,10 +75,10 @@ def main(args):
                           args=args,
                           config=config)
 
-    # if args.wassertein_loss:
-    #     trainer.train_wassertein()
-    # else:
-    #     trainer.train()
+    if args.wassertein_loss:
+        trainer.train_wassertein()
+    else:
+        trainer.train()
 
 if __name__ == "__main__":
     # To suppress tensorflow warnings

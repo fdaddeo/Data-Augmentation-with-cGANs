@@ -8,8 +8,8 @@ from torch.utils.data.dataloader import DataLoader
 
 import torchvision.utils as vutils
 
-from .asset.generator import Generator
-from .asset.discriminator import Discriminator
+from .asset.generator import Generator32, Generator64
+from .asset.discriminator import Discriminator32, Discriminator64
 
 class Trainer(object):
     """
@@ -43,15 +43,30 @@ class Trainer(object):
         self.discriminator_name = f"discriminator_{self.args.run_name}"
 
         # Initialize Models
-        self.generator = Generator(config=self.config['gen'],
-                                   args=self.args,
-                                   num_label=self.config['num_label'],
-                                   image_channels=self.config['image_channels']).to(self.device)
+        if self.config['image_size'] == 32:
+            self.generator = Generator32(config=self.config['gen'],
+                                         num_label=self.config['num_label'],
+                                         image_channels=self.config['image_channels']
+                                        ).to(self.device)
 
-        self.discriminator = Discriminator(config=self.config['dis'],
-                                           args=self.args,
-                                           num_label=self.config['num_label'],
-                                           image_channels=self.config['image_channels']).to(self.device)
+            self.discriminator = Discriminator32(config=self.config['dis'],
+                                                 num_label=self.config['num_label'],
+                                                 image_channels=self.config['image_channels'],
+                                                 wass_loss=self.args.wassertein_loss
+                                                ).to(self.device)
+        elif self.config['image_size'] == 64:
+            self.generator = Generator64(config=self.config['gen'],
+                                         num_label=self.config['num_label'],
+                                         image_channels=self.config['image_channels']
+                                        ).to(self.device)
+
+            self.discriminator = Discriminator64(config=self.config['dis'],
+                                                 num_label=self.config['num_label'],
+                                                 image_channels=self.config['image_channels'],
+                                                 wass_loss=self.args.wassertein_loss
+                                                ).to(self.device)
+        else:
+            raise Exception(f"Image size {self.config['image_size']} not implemented. Please fix the configuration file.")
 
         # Define batch of latent vectors that it will be used to visualize the progression of the generator
         self.fixed_noise = torch.randn(8, self.config['gen']['latentspace_dim'], 1, 1, device=device)
@@ -66,7 +81,7 @@ class Trainer(object):
         if self.config['loss'] == 'BCE':
             self.criterion = NN.BCELoss()
         else:
-            raise Exception(f"{self.config['loss']} not implemented. Please fix the configuration file.")
+            raise Exception(f"Loss {self.config['loss']} not implemented. Please fix the configuration file.")
 
         # Define Optimizer
         if self.config['optimizer'] == 'Adam':
@@ -166,28 +181,28 @@ class Trainer(object):
 
         return images
 
-    def generate_test(self, noise: torch.Tensor):
+    def generate_test(self):
         """
-        Function that generates test samples.
+        Function that generates test samples starting from fixed noise.
 
         Returns
         -------
-        The generated image.
+        The generated images.
         """
         
         self.generator.eval()
 
         # label 0
-        label = (torch.ones(8) * 0).type(torch.LongTensor) #[0,0,0,0,0,0,0,0]
+        label = (torch.ones(8) * 0).type(torch.LongTensor) # [0,0,0,0,0,0,0,0]
         label_gen = self.gen_labels[label].to(self.device)
-        output = self.generator(noise, label_gen)
+        output = self.generator(self.fixed_noise, label_gen)
         inference_res = output
 
         # labels 1-9    
         for i in range(1, self.config['num_label']):
-            label = (torch.ones(8) * i).type(torch.LongTensor)
+            label = (torch.ones(8) * i).type(torch.LongTensor) # [i,i,i,i,i,i,i,i]
             label_gen = self.gen_labels[label].to(self.device)
-            output = self.generator(noise, label_gen)
+            output = self.generator(self.fixed_noise, label_gen)
             inference_res = torch.cat([inference_res, output], dim = 0)
         
         self.generator.train()
@@ -200,7 +215,6 @@ class Trainer(object):
         """
 
         iters = 0
-
         print("Starting GAN Training Loop...")
 
         for epoch in range(self.config['epochs']):
@@ -236,7 +250,7 @@ class Trainer(object):
                 noise = torch.randn(batch_dimension, self.config['dis']['latentspace_dim'], 1, 1, device=self.device)
 
                 # Pick random label ang generate corresponding onehot
-                random_label = (torch.rand(batch_dimension) * self.config['num_label']).type(torch.LongTensor) # equivalent to int64 #[0,6,4,3,9]
+                random_label = (torch.rand(batch_dimension) * self.config['num_label']).type(torch.LongTensor)
                 random_label_gen = self.gen_labels[random_label].to(self.device)
 
                 # Generate fake image batch with G
@@ -283,12 +297,14 @@ class Trainer(object):
                     self.writer.add_scalar('generator loss', error_gen.item(), epoch * len(self.train_loader) + idx)
                     self.writer.add_scalar('discriminator loss', error_dis_total.item(), epoch * len(self.train_loader) + idx)
 
-                    print(f"[{epoch}/{self.config['epochs']}][{idx}/{len(self.train_loader)}]\tLoss_D: {error_dis_total.item()}\tLoss_G: {error_gen.item()}\tD(x): {discriminator_x}\tD(G(z)): {discriminator_generator_z1} / {discriminator_generator_z2}")
+                    print('[%d/%d][%d/%d]\tLoss_D: %.4f\tLoss_G: %.4f\tD(x): %.4f\tD(G(z)): %.4f / %.4f' % 
+                          (epoch, self.config['epochs'], idx, len(self.train_loader), error_dis_total.item(), error_gen.item(), discriminator_x, discriminator_generator_z1, discriminator_generator_z2)
+                         )
 
                 # Check how the generator is doing by saving Generator's output on fixed_noise
                 if (iters % 250 == 0) or ((epoch == self.config['epochs'] - 1) and (idx == len(self.train_loader) - 1)):
                     with torch.no_grad():
-                        fake = self.generate_test(self.fixed_noise).detach().cpu()
+                        fake = self.generate_test().detach().cpu()
                 
                     im_grid = vutils.make_grid(fake, padding=2, normalize=True)
                     vutils.save_image(im_grid, os.path.join(self.config['generated_images_path'], f"{epoch}_{iters}.jpg"))
@@ -389,12 +405,15 @@ class Trainer(object):
                 if idx % self.config['print_every'] == self.config['print_every'] - 1:
                     self.writer.add_scalar('generator loss', error_gen.item(), epoch * len(self.train_loader) + idx)
                     self.writer.add_scalar('discriminator loss', error_dis_total.item(), epoch * len(self.train_loader) + idx)
-                    print(f"[{epoch}/{self.config['epochs']}][{idx}/{len(self.train_loader)}]\tLoss_D: {error_dis_total.item()}\tLoss_G: {error_gen.item()}\tD(x): {discriminator_x}\tD(G(z)): {discriminator_generator_z1} / {discriminator_generator_z2}")
+                    
+                    print('[%d/%d][%d/%d]\tLoss_D: %.4f\tLoss_G: %.4f\tD(x): %.4f\tD(G(z)): %.4f / %.4f' % 
+                          (epoch, self.config['epochs'], idx, len(self.train_loader), error_dis_total.item(), error_gen.item(), discriminator_x, discriminator_generator_z1, discriminator_generator_z2)
+                         )
 
                 # Check how the generator is doing by saving Generator's output on fixed_noise
                 if (iters % 250 == 0) or ((epoch == self.config['epochs'] - 1) and (idx == len(self.train_loader) - 1)):
                     with torch.no_grad():
-                        fake = self.generate_test(self.fixed_noise).detach().cpu()
+                        fake = self.generate_test().detach().cpu()
                     
                     im_grid = vutils.make_grid(fake, padding=2, normalize=True)
                     vutils.save_image(im_grid, os.path.join(self.config['generated_images_path'], f"{epoch}_{iters}.jpg"))
