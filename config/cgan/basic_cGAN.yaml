@@ -35,7 +35,7 @@ num_workers: 2                                                      # Number of 
 print_every: 50                                                     # Print losses every N iteration.
 save_every: 1                                                       # Save models every N epochs.
 tensorboard_path: ../results/Tensorboard/                           # Path to the tensorboard writer.
-generated_images_path: ../results/basic_cGAN/Images/                # Path where to save the generated images.
+generated_images_path: ../results/basic_cGAN/Train_images/          # Path where to save the generated images.
 dataset_path: ../data/                                              # Path where it is located the dataset.
 gen_checkpoint_path: ../results/basic_cGAN/Models/Generator/        # Path in which save the generator models.
 dis_checkpoint_path: ../results/basic_cGAN/Models/Discriminator/    # Path in which save the discriminator models.
