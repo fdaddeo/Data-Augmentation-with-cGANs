@@ -51,6 +51,16 @@ class Tester(object):
         # Define a vector to encode the labels
         self.labels = torch.zeros(1, self.config['num_label'])
 
+        self.folders_preprocess()
+
+    def folders_preprocess(self):
+        """
+        Creates, if needed, a sub-folder for each class, in order to contain the generated images.
+        """
+
+        for idx, class_name in enumerate(self.config['classes']):
+            os.makedirs(os.path.join(self.config['generated_images_path'], class_name), exist_ok=True)
+
     def generate(self):
         """
         Function that generates test samples starting from fixed noise.
@@ -62,13 +72,13 @@ class Tester(object):
         
         with torch.no_grad():
             # Generate a number 'class_images' of images for each class
-            for i_label in range(self.config['num_label']):
+            for idx, class_name in enumerate(self.config['classes']):
                 # Fill 'labels' accordingly to the wanted class
-                label_gen = self.labels.index_fill_(1, torch.tensor([0, i_label]), 1).view(self.config['num_label'], 1)
+                label_gen = self.labels.index_fill_(1, torch.tensor([0, idx]), 1).view(self.config['num_label'], 1)
                 label_gen = label_gen.view(1, self.config['num_label'], 1, 1).to(self.device)
 
                 for i_image in range(self.config['class_images']):
                     output = self.generator(self.fixed_noise, label_gen)
-                    result_path = os.path.join(self.config['generated_images_path'], f"class_{i_label + 1}_image_{i_image + 1}.jpg")
+                    result_path = os.path.join(os.path.join(self.config['generated_images_path'], class_name), f"image_{i_image + 1}.jpg")
                     vutils.save_image(output.data.cpu(), result_path, nrow=1, padding=0)
                     print(f"Saved generated image into {result_path}...")

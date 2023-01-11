@@ -16,4 +16,5 @@ image_size: 32                                                                  
 batch_size: 16                                                                                       # Dimension of the batch.
 image_channels: 3                                                                                    # Number of channels in the input images.
 num_label: 10                                                                                        # Number of labels.
+classes: ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']  # Specify the class names.
 gen_model_path: ../results/basic_cGAN/Models/Generator/generator_basic_cGAN_epoch_99.pth             # Path to the generator model.

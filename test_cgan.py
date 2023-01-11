@@ -33,16 +33,17 @@ def get_config(config: str):
     with open(config, 'r') as f:
         file = yaml.load(f, Loader=yaml.FullLoader)
         
-        if ((file['gen']['use_batch_norm'] and file['gen']['use_instance_norm']) or (file['dis']['use_batch_norm'] and file['dis']['use_instance_norm'])):
+        if (file['gen']['use_batch_norm'] and file['gen']['use_instance_norm']):
             raise Exception("ERROR: in Generator and Discriminator 'use_batch_norm' and 'use_instance_norm' cannot be both true. Please fix the configuration file.")
+
+        if len(file['classes']) != file['num_label']:
+            raise Exception("ERROR: 'num_label' and 'classes' must have the same dimension. Please fix the configuration file.")
 
         return file
 
 
 def main(args):
     config = get_config(args.config)
-
-    os.makedirs(config['generated_images_path'], exist_ok=True)
 
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
     print(f"Code will be executed on {device}")
