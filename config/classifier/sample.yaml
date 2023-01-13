@@ -17,4 +17,4 @@ save_every: 200                                                     # Save model
 tensorboard_path: ../results/Tensorboard/                           # Path to the tensorboard writer.
 dataset_path: ../data/                                              # Path where it is located the dataset.
 generated_dataset_path: ../results/basic_cGAN/Test_images/          # Path where are located the generated images.
-model_path: ../results/classifier_sample/Models/Generator/          # Path in which save the generator models.
+model_path: ../results/classifier_sample/Models/                    # Path in which save the models.
