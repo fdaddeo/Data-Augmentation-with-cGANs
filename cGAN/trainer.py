@@ -300,9 +300,8 @@ class Trainer(object):
                     self.writer.add_scalar('generator loss', error_gen.item(), epoch * len(self.train_loader) + idx)
                     self.writer.add_scalar('discriminator loss', error_dis_total.item(), epoch * len(self.train_loader) + idx)
 
-                    print('[%d/%d][%d/%d]\tLoss_D: %.4f\tLoss_G: %.4f\tD(x): %.4f\tD(G(z)): %.4f / %.4f' % 
-                          (epoch, self.config['epochs'], idx, len(self.train_loader), error_dis_total.item(), error_gen.item(), discriminator_x, discriminator_generator_z1, discriminator_generator_z2)
-                         )
+                    print('[%d/%d][%d/%d]\tLoss_D: %.4f\tLoss_G: %.4f\tD(x): %.4f\tD(G(z)): %.4f / %.4f'
+                          % (epoch, self.config['epochs'], idx, len(self.train_loader), error_dis_total.item(), error_gen.item(), discriminator_x, discriminator_generator_z1, discriminator_generator_z2))
 
                 # Check how the generator is doing by saving Generator's output on fixed_noise
                 if (iters % 250 == 0) or ((epoch == self.config['epochs'] - 1) and (idx == len(self.train_loader) - 1)):
