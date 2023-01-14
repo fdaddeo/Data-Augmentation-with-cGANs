@@ -196,8 +196,8 @@ class Trainer(object):
         self.generator.eval()
 
         # label 0
-        label = (torch.ones(8) * 0).type(torch.LongTensor) # [0,0,0,0,0,0,0,0]
-        label_gen = self.gen_labels[label].to(self.device)
+        label = (torch.ones(8) * 0).type(torch.LongTensor) # [0,0,0,0,0,0,0,0] -> torch.Size([bs])
+        label_gen = self.gen_labels[label].to(self.device) # -> torch.Size([bs, 10, 1, 1])
         output = self.generator(self.fixed_noise, label_gen)
         inference_res = output
 
@@ -308,7 +308,7 @@ class Trainer(object):
                     with torch.no_grad():
                         fake = self.generate_test().detach().cpu()
                 
-                    im_grid = vutils.make_grid(fake, padding=2, normalize=True)
+                    im_grid = vutils.make_grid(fake, nrow=8, padding=2, normalize=True)
                     vutils.save_image(im_grid, os.path.join(self.config['generated_images_path'], f"{epoch}_{iters}.jpg"))
 
                 iters += 1
