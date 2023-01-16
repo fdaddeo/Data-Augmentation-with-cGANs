@@ -59,7 +59,9 @@ class Tester(object):
         """
 
         for idx, class_name in enumerate(self.config['classes']):
-            os.makedirs(os.path.join(self.config['generated_images_path'], class_name), exist_ok=True)
+            os.makedirs(os.path.join(self.config['generated_dataset'], class_name), exist_ok=True)
+
+        os.makedirs(self.config['generated_images_path'], exist_ok=True)
 
     def label_preprocessing(self):
         """
@@ -84,7 +86,9 @@ class Tester(object):
         -------
         The generated images.
         """
-        
+
+        print("Generation started...")
+
         self.generator.eval()
 
         with torch.no_grad():
@@ -95,8 +99,11 @@ class Tester(object):
                 output = self.generator(self.fixed_noise, label_gen) # -> torch.Size([class_images, 3, image_w, image_h])
 
                 for i, image in enumerate(output):
-                    result_path = os.path.join(os.path.join(self.config['generated_images_path'], class_name), f"image_{i + 1}.jpg")
-                    vutils.save_image(image.data.cpu(), result_path, nrow=1, padding=0, normalize=True)
-                    print(f"Saved generated image into {result_path}...")
+                    dataset_path = os.path.join(os.path.join(self.config['generated_dataset'], class_name), f"image_{i + 1}.jpg")
+                    images_path = os.path.join(self.config['generated_images_path'], f"image_{i + 1}_class_{class_name}.jpg")
+                    vutils.save_image(image.data.cpu(), dataset_path, nrow=1, padding=0, normalize=True)
+                    vutils.save_image(image.data.cpu(), images_path, nrow=1, padding=0, normalize=True)
+
+            print("Generation done!")
 
         self.generator.train()
