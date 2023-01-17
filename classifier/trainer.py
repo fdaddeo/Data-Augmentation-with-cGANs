@@ -13,10 +13,13 @@ class FineTune(object):
     This class implements the training for the pretrained classifier.
     """
 
-    def __init__(self, writer: SummaryWriter, train_loader: DataLoader, test_loader: DataLoader, device: torch.device, args: dict, config: dict):
+    def __init__(self, model_name: str, writer: SummaryWriter, train_loader: DataLoader, test_loader: DataLoader, device: torch.device, args: dict, config: dict):
         """
         Parameters
         ----------
+        model_name : str
+            The name of the model.
+
         writer : SummaryWriter
             The SummaryWriter for storing infos about training in a tensorboard format.
 
@@ -33,14 +36,13 @@ class FineTune(object):
             The configuration file.
         """
 
+        self.model_name = model_name
         self.writer = writer
         self.train_loader = train_loader
         self.test_loader = test_loader
         self.device = device
         self.args = args
-        self.config = config
-
-        self.model_name = f"{self.args.run_name}"
+        self.config = config    
 
         self.model = models.alexnet(weights='DEFAULT')
 
