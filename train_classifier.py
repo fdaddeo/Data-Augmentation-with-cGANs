@@ -61,13 +61,9 @@ def main(args):
                                        transform=transformList)
 
         trainset = ConcatDataset([cifar10_trainset, augment_trainset])
-
-        model_name = f"{args.run_name}_augment"
     else:
         trainset = ImageFolder(root=config['generated_dataset_path'],
                                transform=transformList)
-
-        model_name = f"{args.run_name}"
 
     trainloader = DataLoader(dataset=trainset,
                              batch_size=config['batch_size'],
@@ -87,8 +83,7 @@ def main(args):
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
     print(f"Code will be executed on {device}")
 
-    trainer = FineTune(model_name=model_name,
-                       writer=writer,
+    trainer = FineTune(writer=writer,
                        train_loader=trainloader,
                        test_loader=cifar10_testloader,
                        device=device,
