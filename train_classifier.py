@@ -3,7 +3,9 @@ import argparse
 import torch
 import yaml
 
-from torch.utils.data import ConcatDataset
+import numpy as np
+
+from torch.utils.data import ConcatDataset, random_split
 from torch.utils.tensorboard import SummaryWriter
 from torch.utils.data.dataloader import DataLoader
 
@@ -49,7 +51,8 @@ def main(args):
     # Required by vgg
     transformList = transforms.Compose([transforms.Resize(224),
                                         transforms.ToTensor(),
-                                        transforms.Normalize(mean=[0.4914, 0.4822, 0.4465], std=[0.2023, 0.1994, 0.2010])])
+                                        # transforms.Normalize(mean=[0.4914, 0.4822, 0.4465], std=[0.2023, 0.1994, 0.2010])])
+                                        transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))])
 
     if args.augment_data:
         cifar10_trainset = CIFAR10(root=config['dataset_path'],
@@ -60,7 +63,14 @@ def main(args):
         augment_trainset = ImageFolder(root=config['generated_dataset_path'],
                                        transform=transformList)
 
-        trainset = ConcatDataset([cifar10_trainset, augment_trainset])
+        cifar10_len = len(cifar10_trainset)
+        augment_len = len(augment_trainset)
+        split = int(0.7 * cifar10_len)
+
+        cifar10_train, _ = random_split(cifar10_trainset, [split, cifar10_len - split])
+        augment_train, _ = random_split(augment_trainset, [augment_len - split, split])
+
+        trainset = ConcatDataset([cifar10_train, augment_train])
     else:
         trainset = ImageFolder(root=config['generated_dataset_path'],
                                transform=transformList)
