@@ -77,7 +77,7 @@ class FineTune(object):
             The iteration in which the model was saved.
         """
 
-        path = os.path.join(self.config['model_path'], f"{self.model_name}_iter_{idx}.pth")
+        path = os.path.join(self.config['model_path'], f"{self.model_name}_epoch_{idx}.pth")
         torch.save(self.model.state_dict(), path)
         print("Model saved!")
 
@@ -94,7 +94,7 @@ class FineTune(object):
         for param in model.parameters():
             param.requires_grad = req_grad
 
-    def test(self, iter: int):
+    def test(self, iter: int, epoch: int):
         """
         Perform the test in order to keep trace the performances during the training.
 
@@ -102,6 +102,9 @@ class FineTune(object):
         ----------
         iter : int
             The iteration number.
+
+        epoch : int
+            The epoch number.
         """
 
         correct = 0
@@ -121,7 +124,7 @@ class FineTune(object):
                 total += label.size(0)
                 correct += (predicted == label).sum().item()
 
-        self.writer.add_scalar('test accuracy', 100 * correct / total, iter)
+        self.writer.add_scalar('test accuracy', 100 * correct / total, epoch * len(self.train_loader) + iter)
 
         print(f'Accuracy of the network on the 10000 test images: {100 * correct / total} %')
         self.model.train()
@@ -132,37 +135,36 @@ class FineTune(object):
         """
 
         running_loss = 0.0
-        for idx, (image, label) in enumerate(self.train_loader, 0):
-            # Exit condition
-            if idx > self.config['max_iter']:
-                break
 
-            # Data on correct device
-            image, label = image.to(self.device), label.to(self.device)
+        for epoch in range(self.config['epochs']):
+            for idx, (image, label) in enumerate(self.train_loader, 0):
 
-            # Zero the parameter gradients
-            self.optimizer.zero_grad()
+                # Data on correct device
+                image, label = image.to(self.device), label.to(self.device)
 
-            # forward + backward + optimize
-            output = self.model(image)
-            loss = self.criterion(output, label)
-            loss.backward()
-            self.optimizer.step()
+                # Zero the parameter gradients
+                self.optimizer.zero_grad()
 
-            running_loss += loss.item()
+                # forward + backward + optimize
+                output = self.model(image)
+                loss = self.criterion(output, label)
+                loss.backward()
+                self.optimizer.step()
 
-            # Output training stats
-            if idx % self.config['print_every'] == self.config['print_every'] - 1:
-                self.writer.add_scalar('training loss', running_loss / self.config['print_every'], idx)
-                
-                print(f"[Iter {idx + 1:5d}] loss: {running_loss / self.config['print_every']:.3f}")
-                running_loss = 0.0
+                running_loss += loss.item()
 
-                # Test model
-                self.test(idx)
+                # Output training stats
+                if idx % self.config['print_every'] == self.config['print_every'] - 1:
+                    self.writer.add_scalar('training loss', running_loss / self.config['print_every'], epoch * len(self.train_loader) + idx)
+                    
+                    print(f"[{epoch + 1}, {idx + 1:5d}] loss: {running_loss / self.config['print_every']:.3f}")
+                    running_loss = 0.0
 
-            if ((idx % self.config['save_every'] == self.config['save_every'] - 1) or (idx == len(self.train_loader) - 1)):
-                self.save_model(idx)
+                    # Test model
+                    self.test(idx, epoch)
+
+                if ((epoch % self.config['save_every'] == self.config['save_every'] - 1) or (epoch == len(self.train_loader) - 1)):
+                    self.save_model(epoch)
 
         self.writer.flush()
         self.writer.close()
