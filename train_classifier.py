@@ -17,7 +17,7 @@ def argparser():
 
     args.add_argument('--run_name', type=str, help='The name of the run will be used to store the results.', required=True)
     args.add_argument('--device', type=str, default='cuda:0', choices=['cuda:0', 'cpu'],help='Specify the device on which executes the training.', required=False)
-    args.add_argument('--config', type=str, default='./config/classifier/sample.yaml', help='Path to the configuration file.', required=False)
+    args.add_argument('--config', type=str, default='./config/classifier/basic_classifier_epoch100.yaml', help='Path to the configuration file.', required=False)
     args.add_argument('--augment_data', action='store_true', help='Perform data augmentation of CIFAR10.')
 
     return args.parse_args()

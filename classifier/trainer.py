@@ -40,7 +40,7 @@ class FineTune(object):
         self.args = args
         self.config = config
 
-        self.model_name = f"classificator_{self.args.run_name}"
+        self.model_name = f"{self.args.run_name}"
 
         self.model = models.alexnet(weights='DEFAULT')
 
@@ -134,11 +134,12 @@ class FineTune(object):
         Fine tuning function.
         """
 
-        running_loss = 0.0
+        print("Fine tuning started...")
 
         for epoch in range(self.config['epochs']):
-            for idx, (image, label) in enumerate(self.train_loader, 0):
+            running_loss = 0.0
 
+            for idx, (image, label) in enumerate(self.train_loader, 0):
                 # Data on correct device
                 image, label = image.to(self.device), label.to(self.device)
 
@@ -163,8 +164,8 @@ class FineTune(object):
                     # Test model
                     self.test(idx, epoch)
 
-                if ((epoch % self.config['save_every'] == self.config['save_every'] - 1) or (epoch == len(self.train_loader) - 1)):
-                    self.save_model(epoch)
+            if ((epoch % self.config['save_every'] == self.config['save_every'] - 1) or (epoch == len(self.train_loader) - 1)):
+                self.save_model(epoch)
 
         self.writer.flush()
         self.writer.close()
