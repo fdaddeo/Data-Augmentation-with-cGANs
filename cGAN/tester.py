@@ -10,22 +10,18 @@ class Tester(object):
     This class implements testing for the cGAN.
     """
 
-    def __init__(self, device: torch.device, args: dict, config: dict):
+    def __init__(self, device: torch.device, config: dict):
         """
         Parameters
         ----------
         device : torch.device
             Device in which execute the code.
 
-        args : dict
-            The arguments passed as program launch.
-
         config : dict
             The configuration file.
         """
 
         self.device = device
-        self.args = args
         self.config = config
 
         # Initialize Models

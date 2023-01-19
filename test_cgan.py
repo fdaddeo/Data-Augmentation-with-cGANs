@@ -12,7 +12,6 @@ def argparser():
 
     args.add_argument('--device', type=str, default='cuda:0', choices=['cuda:0', 'cpu'],help='Specify the device on which executes the training.', required=False)
     args.add_argument('--config', type=str, default='./config/cgan_test/basic_cGAN.yaml', help='Path to the configuration file.', required=False)
-    args.add_argument('--wassertein_loss', action='store_true', help='If it was used wassertein loss during the training.')
 
     return args.parse_args()
 
@@ -49,7 +48,6 @@ def main(args):
     print(f"Code will be executed on {device}")
 
     tester = Tester(device=device,
-                    args=args,
                     config=config)
 
     tester.generate()
