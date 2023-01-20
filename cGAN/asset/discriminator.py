@@ -6,7 +6,7 @@ class Discriminator32(NN.Module):
     This class represents the discriminator of the cGAN for images with a dimension of 32 pixels.
     """
 
-    def __init__(self, config: dict, num_label: int, image_channels: int, wass_loss: bool):
+    def __init__(self, config: dict, num_label: int, image_channels: int, loss: str, wass_loss: bool):
         """
         Parameters
         ----------
@@ -18,6 +18,9 @@ class Discriminator32(NN.Module):
 
         image_channels : int
             The number of channels of the images.
+
+        loss : str
+            The loss specified in the configuration file.
 
         wass_loss : bool
             Set True if it will be used a wassertein loss, False otherwise.
@@ -112,7 +115,7 @@ class Discriminator32(NN.Module):
                 # final shape: (bs, 1, 1, 1)
             ]
 
-        if not wass_loss:
+        if not wass_loss and loss != 'BCEWithLogits':
             to_add += [
                 NN.Sigmoid()
             ]
@@ -136,7 +139,7 @@ class Discriminator64(NN.Module):
     This class represents the discriminator of the cGAN for images with a dimension of 64 pixels.
     """
 
-    def __init__(self, config: dict, num_label: int, image_channels: int, wass_loss: bool):
+    def __init__(self, config: dict, num_label: int, image_channels: int, loss: str, wass_loss: bool):
         """
         Parameters
         ----------
@@ -148,6 +151,9 @@ class Discriminator64(NN.Module):
 
         image_channels : int
             The number of channels of the images.
+
+        loss : str
+            The loss specified in the configuration file.
 
         wass_loss : bool
             Set True if it will be used a wassertein loss, False otherwise.
@@ -262,7 +268,7 @@ class Discriminator64(NN.Module):
                 # final shape: (bs, 1, 1, 1)
             ]
 
-        if not wass_loss:
+        if not wass_loss and loss != 'BCEWithLogits':
             to_add += [
                 NN.Sigmoid()
             ]

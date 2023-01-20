@@ -55,6 +55,7 @@ class Trainer(object):
             self.discriminator = Discriminator32(config=self.config['dis'],
                                                  num_label=self.config['num_label'],
                                                  image_channels=self.config['image_channels'],
+                                                 loss=self.config['loss'],
                                                  wass_loss=self.args.wassertein_loss
                                                 ).to(self.device)
         elif self.config['image_size'] == 64:
@@ -66,6 +67,7 @@ class Trainer(object):
             self.discriminator = Discriminator64(config=self.config['dis'],
                                                  num_label=self.config['num_label'],
                                                  image_channels=self.config['image_channels'],
+                                                 loss=self.config['loss'],
                                                  wass_loss=self.args.wassertein_loss
                                                 ).to(self.device)
         else:
@@ -83,6 +85,8 @@ class Trainer(object):
         # Define Loss function
         if self.config['loss'] == 'BCE':
             self.criterion = NN.BCELoss()
+        elif self.config['loss'] == 'BCEWithLogits':
+            self.criterion = NN.BCEWithLogitsLoss()
         else:
             raise Exception(f"Loss {self.config['loss']} not implemented. Please fix the configuration file.")
 
