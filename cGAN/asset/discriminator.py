@@ -115,6 +115,7 @@ class Discriminator32(NN.Module):
                 # final shape: (bs, 1, 1, 1)
             ]
 
+        # BCEWithLogits implements itself a plain Sigmoid followed by a BCELoss as, by combining the operations into one layer.
         if not wass_loss and loss != 'BCEWithLogits':
             to_add += [
                 NN.Sigmoid()
