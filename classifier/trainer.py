@@ -151,12 +151,12 @@ class FineTune(object):
         df_cm = pd.DataFrame(sklearn_cm/np.sum(sklearn_cm) * 10, index=[i for i in self.config['classes']], columns=[i for i in self.config['classes']])
         cf_matrix = sn.heatmap(df_cm, annot=True).get_figure()
 
-        self.writer.add_scalar('Test accuracy', accuracy, epoch * len(self.train_loader) + iter)
-        self.writer.add_scalar('Test precision', precision, epoch * len(self.train_loader) + iter)
-        self.writer.add_scalar('Test recall', recall, epoch * len(self.train_loader) + iter)
-        self.writer.add_scalar('Test f1 score', f1, epoch * len(self.train_loader) + iter)
+        self.writer.add_scalar('test Accuracy', accuracy, epoch * len(self.train_loader) + iter)
+        self.writer.add_scalar('test Precision', precision, epoch * len(self.train_loader) + iter)
+        self.writer.add_scalar('test Recall', recall, epoch * len(self.train_loader) + iter)
+        self.writer.add_scalar('test F1 Score', f1, epoch * len(self.train_loader) + iter)
 
-        self.writer.add_figure("Test confusion matrix", cf_matrix, epoch * len(self.train_loader) + iter)
+        self.writer.add_figure("test Confusion Matrix", cf_matrix, epoch * len(self.train_loader) + iter)
         
         print(f"Testing network on the 10000 test images:\n\t\t - accuracy = {accuracy} %\n\t\t - precision = {precision} %\n\t\t - recall = {recall}\n\t\t - f1 score = {f1}")
 
@@ -189,7 +189,7 @@ class FineTune(object):
 
                 # Output training stats
                 if idx % self.config['print_every'] == self.config['print_every'] - 1:
-                    self.writer.add_scalar('training loss', running_loss / self.config['print_every'], epoch * len(self.train_loader) + idx)
+                    self.writer.add_scalar('classificator training loss', running_loss / self.config['print_every'], epoch * len(self.train_loader) + idx)
                     
                     print(f"[{epoch + 1}, {idx + 1:5d}] loss: {running_loss / self.config['print_every']:.3f}")
                     running_loss = 0.0
