@@ -42,14 +42,23 @@ class FineTune(object):
 
         self.model_name = self.args.run_name
 
-        self.model = models.alexnet(weights='DEFAULT')
-
-        # Unfreeze learning only for Fully Connected layer
-        self.set_parameter_requires_grad(self.model.features, False)
-
-        # Reshape last layer according to the number of classes
-        num_feature = self.model.classifier[len(self.model.classifier) - 1].in_features
-        self.model.classifier[len(self.model.classifier) - 1] = NN.Linear(num_feature, self.config['num_label'])
+        # Load model and unfreeze learning only for Fully Connected layer
+        if (self.config['model'] == 'alexnet'):
+            self.model = models.alexnet(weights='DEFAULT')
+            self.set_parameter_requires_grad(self.model.features, False)
+            # Reshape last layer according to the number of classes
+            num_feature = self.model.classifier[len(self.model.classifier) - 1].in_features
+            self.model.classifier[len(self.model.classifier) - 1] = NN.Linear(num_feature, self.config['num_label'])
+        elif (self.config['model'] == 'resnet'):
+            self.model = models.resnet152(weights='DEFAULT')
+            for idx, (name, module) in enumerate(self.model.named_children(), 0):
+                if name != 'fc':
+                    self.set_parameter_requires_grad(module, False)
+            # Reshape last layer according to the number of classes
+            num_feature = self.model.fc.in_features
+            self.model.fc = NN.Linear(num_feature, self.config['num_label'])
+        else:
+            raise Exception(f"Model {self.config['model']} not implemented. Please fix the configuration file.")
         
         self.model.to(device)
 

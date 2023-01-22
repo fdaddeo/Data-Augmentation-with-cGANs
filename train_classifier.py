@@ -19,7 +19,7 @@ def argparser():
 
     args.add_argument('--run_name', type=str, help='The name of the run will be used to store the results.', required=True)
     args.add_argument('--device', type=str, default='cuda:0', choices=['cuda:0', 'cpu'],help='Specify the device on which executes the training.', required=False)
-    args.add_argument('--config', type=str, default='./config/classifier/basic_classifier_epoch100.yaml', help='Path to the configuration file.', required=False)
+    args.add_argument('--config', type=str, default='./config/classifier/alexnet_cGAN_epoch100.yaml', help='Path to the configuration file.', required=False)
     args.add_argument('--augment_data', action='store_true', help='Perform data augmentation of CIFAR10.')
 
     return args.parse_args()
@@ -48,7 +48,7 @@ def main(args):
 
     os.makedirs(config['model_path'], exist_ok=True)
 
-    # Required by vgg
+    # Resize is fine both for alexnet and resnet
     transformList = transforms.Compose([transforms.Resize(224),
                                         transforms.ToTensor(),
                                         # transforms.Normalize(mean=[0.4914, 0.4822, 0.4465], std=[0.2023, 0.1994, 0.2010])])
