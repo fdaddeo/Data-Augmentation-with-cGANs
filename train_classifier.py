@@ -3,8 +3,6 @@ import argparse
 import torch
 import yaml
 
-import numpy as np
-
 from torch.utils.data import ConcatDataset, random_split
 from torch.utils.tensorboard import SummaryWriter
 from torch.utils.data.dataloader import DataLoader
