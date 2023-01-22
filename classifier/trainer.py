@@ -1,12 +1,18 @@
 import os
 import torch
 
+import pandas as pd
+import numpy as np
+import seaborn as sn
+
 import torch.nn as NN
 import torch.optim as optim
 import torchvision.models as models
 
 from torch.utils.tensorboard import SummaryWriter
 from torch.utils.data.dataloader import DataLoader
+
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
 
 class FineTune(object):
     """
@@ -74,7 +80,7 @@ class FineTune(object):
         elif self.config['optimizer'] == 'SGD':
             self.optimizer = optim.SGD(self.model.parameters(), lr=self.config['learning_rate'], momentum=0.9)
         else:
-            raise Exception(f"{self.config['optimizer']} not implemented. Please fix the configuration file.")    
+            raise Exception(f"{self.config['optimizer']} not implemented. Please fix the configuration file.") 
 
     def save_model(self, idx: int):
         """
@@ -116,8 +122,8 @@ class FineTune(object):
             The epoch number.
         """
 
-        correct = 0
-        total = 0
+        predicted = [] # save the prediction
+        groundtruth = [] # save the ground truth
 
         # Model into evaluation mode
         self.model.eval()
@@ -128,14 +134,32 @@ class FineTune(object):
                 image, label = image.to(self.device), label.to(self.device)
                 # Running images through the network
                 outputs = self.model(image)
+
                 # Class with the highest energy is what we choose as prediction
-                _, predicted = torch.max(outputs.data, 1)
-                total += label.size(0)
-                correct += (predicted == label).sum().item()
+                prediction = (torch.max(torch.exp(outputs), 1)[1]).data.cpu().numpy()
+                predicted.extend(prediction)
 
-        self.writer.add_scalar('test accuracy', 100 * correct / total, epoch * len(self.train_loader) + iter)
+                label = label.data.cpu().numpy()
+                groundtruth.extend(label)
 
-        print(f'Accuracy of the network on the 10000 test images: {100 * correct / total} %')
+        accuracy = accuracy_score(y_true=groundtruth, y_pred=predicted)
+        precision = precision_score(y_true=groundtruth, y_pred=predicted, average='macro') # 'macro' = all classes have the same weight
+        recall = recall_score(y_true=groundtruth, y_pred=predicted, average='macro')
+        f1 = f1_score(y_true=groundtruth, y_pred=predicted, average='macro')
+
+        sklearn_cm = confusion_matrix(groundtruth, predicted)
+        df_cm = pd.DataFrame(sklearn_cm/np.sum(sklearn_cm) * 10, index=[i for i in self.config['classes']], columns=[i for i in self.config['classes']])
+        cf_matrix = sn.heatmap(df_cm, annot=True).get_figure()
+
+        self.writer.add_scalar('Test accuracy', accuracy, epoch * len(self.train_loader) + iter)
+        self.writer.add_scalar('Test precision', precision, epoch * len(self.train_loader) + iter)
+        self.writer.add_scalar('Test recall', recall, epoch * len(self.train_loader) + iter)
+        self.writer.add_scalar('Test f1 score', f1, epoch * len(self.train_loader) + iter)
+
+        self.writer.add_figure("Test confusion matrix", cf_matrix, epoch * len(self.train_loader) + iter)
+        
+        print(f"Testing network on the 10000 test images:\n\t\t - accuracy = {accuracy} %\n\t\t - precision = {precision} %\n\t\t - recall = {recall}\n\t\t - f1 score = {f1}")
+
         self.model.train()
 
     def train(self):
