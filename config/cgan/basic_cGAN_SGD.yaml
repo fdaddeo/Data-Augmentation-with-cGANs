@@ -20,7 +20,7 @@ dis:
 
 # Training settings
 epochs: 100                                                             # Number of epochs.
-learning_rate: 0.001                                                    # Initial learning rate.
+learning_rate: 0.0002                                                   # Initial learning rate.
 loss: BCE                                                               # Loss to be used.
 alpha: 10                                                               # Alpha hyper-parameter for Wassertein Loss.
 optimizer: SGD                                                          # Optimizer to be used.
