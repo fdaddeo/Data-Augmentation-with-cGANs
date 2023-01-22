@@ -28,7 +28,7 @@ beta: 0.5                                                               # Beta h
 
 # Data settings
 image_size: 32                                                          # Dimension of the images.
-batch_size: 16                                                          # Dimension of the batch.
+batch_size: 64                                                          # Dimension of the batch.
 image_channels: 3                                                       # Number of channels in the input images.
 num_label: 10                                                           # Number of labels.
 num_workers: 2                                                          # Number of workers in data loader.
