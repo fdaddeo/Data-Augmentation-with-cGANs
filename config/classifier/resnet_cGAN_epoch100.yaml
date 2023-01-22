@@ -1,4 +1,5 @@
 # Fine-tuninig settings
+model: 'resnet'                                                                 # Model to be used.
 epochs: 5                                                                       # Number of epochs.
 learning_rate: 0.001                                                            # Initial learning rate.
 loss: CrossEntropy                                                              # Loss to be used.
@@ -15,5 +16,5 @@ print_every: 50                                                                 
 save_every: 1                                                                   # Save model every N epochs.
 tensorboard_path: ../results/Tensorboard/                                       # Path to the tensorboard writer.
 dataset_path: ../data/                                                          # Path where it is located the dataset.
-generated_dataset_path: ../results/basic_wGAN/Dataset_epoch_30/                 # Path where are located the generated images.
-model_path: ../results/basic_wGAN/Models/basic_classifier_epoch30/              # Path in which save the models.
+generated_dataset_path: ../results/basic_cGAN/Dataset_epoch_100/                # Path where are located the generated images.
+model_path: ../results/basic_cGAN/Models/resnet_epoch100/                       # Path in which save the models.
