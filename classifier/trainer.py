@@ -190,16 +190,16 @@ class FineTune(object):
         for epoch in range(self.config['epochs']):
             running_loss = 0.0
 
-            for idx, (image, label) in enumerate(self.train_loader, 0):
+            for idx, (images, labels) in enumerate(self.train_loader, 0):
                 # Data on correct device
-                image, label = image.to(self.device), label.to(self.device)
+                images, labels = images.to(self.device), labels.to(self.device)
 
                 # Zero the parameter gradients
                 self.optimizer.zero_grad()
 
                 # forward + backward + optimize
-                output = self.model(image)
-                loss = self.criterion(output, label)
+                output = self.model(images)
+                loss = self.criterion(output, labels)
                 loss.backward()
                 self.optimizer.step()
 
