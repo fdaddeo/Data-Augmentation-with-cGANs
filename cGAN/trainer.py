@@ -244,22 +244,22 @@ class Trainer(object):
         print("Starting GAN Training Loop...")
 
         for epoch in range(self.config['epochs']):
-            for idx, (image, label) in enumerate(self.train_loader, 0):
+            for idx, (images, labels) in enumerate(self.train_loader, 0):
                 ############################
                 # (1) Update Discriminator network: maximize log(D(x)) + log(1 - D(G(z)))
                 ###########################
 
                 ## First train with all-real batch
                 self.discriminator.zero_grad()
-                batch_dimension = image.size(0)
+                batch_dimension = images.size(0)
 
                 # Establish convention for real and fake labels during training
                 real_label = torch.ones(batch_dimension).to(self.device)
                 fake_label = torch.zeros(batch_dimension).to(self.device)
 
                 # Format batch
-                real_image = image.to(self.device)
-                real_label_dis = self.dis_labels[label].to(self.device)
+                real_image = images.to(self.device)
+                real_label_dis = self.dis_labels[labels].to(self.device)
 
                 # Forward pass real batch through Discriminator
                 output = self.discriminator(real_image, real_label_dis).view(-1)
@@ -339,8 +339,6 @@ class Trainer(object):
             if ((epoch % self.config['save_every'] == self.config['save_every'] - 1) or (epoch == self.config['epochs'] - 1)):
                 self.save_models(epoch)
 
-        # TODO: implement early stopping and ReduceLROnPlateau
-
         self.writer.flush()
         self.writer.close()
         print("Finished Training")
@@ -355,18 +353,18 @@ class Trainer(object):
         print("Starting WGAN Training Loop...")
 
         for epoch in range(self.config['epochs']):
-            for idx, (image, label) in enumerate(self.train_loader, 0):
+            for idx, (images, labels) in enumerate(self.train_loader, 0):
                 ############################
                 # (1) Update Discriminator network: maximize log(D(x)) + log(1 - D(G(z)))
                 ###########################
                 
                 ## First train with all-real batch
                 self.discriminator.zero_grad()
-                batch_dimension = image.size(0)
+                batch_dimension = images.size(0)
 
                 # Format batch
-                real_image = image.to(self.device)
-                real_label_dis = self.dis_labels[label].to(self.device)
+                real_image = images.to(self.device)
+                real_label_dis = self.dis_labels[labels].to(self.device)
 
                 # Forward pass real batch through Discriminator
                 output = self.discriminator(real_image, real_label_dis).view(-1)
@@ -378,13 +376,13 @@ class Trainer(object):
                 ## Then train with all-fake batch
                 # Generate batch of latent vectors
                 noise = torch.randn(batch_dimension, self.config['dis']['latentspace_dim'], 1, 1, device=self.device)
-                random_label_gen = self.gen_labels[label].to(self.device)
+                random_label_gen = self.gen_labels[labels].to(self.device)
 
                 # Generate fake image batch with Generator
                 fake_image = self.generator(noise, random_label_gen)
 
                 # Classify all fake batch with Discriminator
-                random_label_dis = self.dis_labels[label].to(self.device)
+                random_label_dis = self.dis_labels[labels].to(self.device)
                 output = self.discriminator(fake_image.detach(), random_label_dis).view(-1)
 
                 # Calculate Discriminator's loss on the all-fake batch
