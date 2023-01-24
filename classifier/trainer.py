@@ -6,6 +6,7 @@ import numpy as np
 import seaborn as sn
 
 import torch.nn as NN
+import torch.nn.functional as F
 import torch.optim as optim
 import torchvision.models as models
 
@@ -122,43 +123,60 @@ class FineTune(object):
             The epoch number.
         """
 
-        predicted = [] # save the prediction
-        groundtruth = [] # save the ground truth
+        # Used for computing PR-Curve, F1 Score and Confusion Matrix
+        class_probabilities = [] # save the prediction confidence
+        class_labels = [] # save the ground truth
+        class_predictions = [] # save the prediction
+
+        # Used for Accuracy
+        correct = 0
+        total = 0
 
         # Model into evaluation mode
         self.model.eval()
 
         # Don't need to calculate the gradients for outputs
         with torch.no_grad():
-            for idx, (image, label) in enumerate(self.test_loader, 0):
-                image, label = image.to(self.device), label.to(self.device)
+            for idx, (images, labels) in enumerate(self.test_loader, 0):
+                images, labels = images.to(self.device), labels.to(self.device)
                 # Running images through the network
-                outputs = self.model(image)
+                outputs = self.model(images)
 
                 # Class with the highest energy is what we choose as prediction
-                prediction = (torch.max(torch.exp(outputs), 1)[1]).data.cpu().numpy()
-                predicted.extend(prediction)
+                predictions = (torch.max(outputs.data, 1)[1])
 
-                label = label.data.cpu().numpy()
-                groundtruth.extend(label)
+                # Computing accuracy
+                total += labels.size(0)
+                correct += (predictions == labels).sum().item()
 
-        accuracy = accuracy_score(y_true=groundtruth, y_pred=predicted)
-        precision = precision_score(y_true=groundtruth, y_pred=predicted, average='macro') # 'macro' = all classes have the same weight
-        recall = recall_score(y_true=groundtruth, y_pred=predicted, average='macro')
-        f1 = f1_score(y_true=groundtruth, y_pred=predicted, average='macro')
+                # Computing pr-curve
+                probabilities = [(F.softmax(out.data, dim=0)).cpu() for idx, out in enumerate(outputs, 0)]
+                class_probabilities.append(probabilities)
+                class_labels.append(labels.data.cpu())
+                class_predictions.append(predictions.data.cpu())
 
-        sklearn_cm = confusion_matrix(groundtruth, predicted)
+        test_probabilities = torch.cat([torch.stack(batch) for idx, batch in enumerate(class_probabilities, 0)])
+        test_labels = torch.cat(class_labels)
+        test_predictions = torch.cat(class_predictions)
+
+        for idx, class_name in enumerate(self.config['classes'], 0):
+            pr_curve_groundtruth = test_labels == idx
+            pr_curve_probabilities = test_probabilities[:, idx]
+
+            self.writer.add_pr_curve(class_name, pr_curve_groundtruth, pr_curve_probabilities, global_step=epoch * len(self.train_loader) + iter)
+
+        accuracy = 100 * correct / total
+        self.writer.add_scalar('test Accuracy', accuracy, epoch * len(self.train_loader) + iter)
+
+        f1 = f1_score(y_true=test_labels, y_pred=test_predictions, average='macro')
+        self.writer.add_scalar('test F1 Score', f1, epoch * len(self.train_loader) + iter)
+        
+        sklearn_cm = confusion_matrix(y_true=test_labels, y_pred=test_predictions)
         df_cm = pd.DataFrame(sklearn_cm/np.sum(sklearn_cm) * 10, index=[i for i in self.config['classes']], columns=[i for i in self.config['classes']])
         cf_matrix = sn.heatmap(df_cm, annot=True).get_figure()
-
-        self.writer.add_scalar('test Accuracy', accuracy, epoch * len(self.train_loader) + iter)
-        self.writer.add_scalar('test Precision', precision, epoch * len(self.train_loader) + iter)
-        self.writer.add_scalar('test Recall', recall, epoch * len(self.train_loader) + iter)
-        self.writer.add_scalar('test F1 Score', f1, epoch * len(self.train_loader) + iter)
-
-        self.writer.add_figure("test Confusion Matrix", cf_matrix, epoch * len(self.train_loader) + iter)
+        self.writer.add_figure("test Confusion Matrix", cf_matrix, epoch * len(self.train_loader) + iter)    
         
-        print(f"Testing network on the 10000 test images:\n\t\t - accuracy = {accuracy} %\n\t\t - precision = {precision} %\n\t\t - recall = {recall}\n\t\t - f1 score = {f1}")
+        print(f"Testing network on the 10000 test images:\n\t\t - accuracy = {accuracy} %\n\t\t - f1 score = {f1}")
 
         self.model.train()
 
