@@ -188,6 +188,25 @@ class Trainer(object):
 
         return images
 
+    def draw_tensorboard_graph(self):
+        """
+        Draws the Discriminator and Generator graphs on Tensorboard.
+
+        Warning
+        -------
+        Due to a bug of Tensorboard, it's impossible to visualize simultaneously two graphs. So this function doesn't work.
+        """
+
+        label_graph = (torch.rand(8) * self.config['num_label']).type(torch.LongTensor)
+        label_gen_graph = self.gen_labels[label_graph].to(self.device)
+        self.writer.add_graph(self.generator, (self.fixed_noise, label_gen_graph))
+
+        dataiter = iter(self.train_loader)
+        images, labels = next(dataiter)
+        images = images.to(self.device)
+        label_dis_graph = self.dis_labels[labels].to(self.device)
+        self.writer.add_graph(self.discriminator, (images, label_dis_graph))
+
     def generate_test(self):
         """
         Function that generates test samples starting from fixed noise.
