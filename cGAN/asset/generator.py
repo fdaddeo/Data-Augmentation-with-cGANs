@@ -39,9 +39,15 @@ class Generator32(NN.Module):
                 NN.BatchNorm2d(config['featuremap_dim'] * 2),
                 NN.ReLU(True)
             ]
-        elif config['use_instance_norm']:
+        
+        if config['use_instance_norm']:
             to_add += [
                 NN.InstanceNorm2d(config['featuremap_dim'] * 2, affine=True),
+                NN.ReLU(True)
+            ]
+        
+        if (not config['use_batch_norm']) and (not config['use_instance_norm']):
+            to_add += [
                 NN.ReLU(True)
             ]
 
@@ -65,9 +71,15 @@ class Generator32(NN.Module):
                 NN.BatchNorm2d(config['featuremap_dim'] * 2),
                 NN.ReLU(True)
             ]
-        elif config['use_instance_norm']:
+        
+        if config['use_instance_norm']:
             to_add += [
                 NN.InstanceNorm2d(config['featuremap_dim'] * 2, affine=True),
+                NN.ReLU(True)
+            ]
+        
+        if (not config['use_batch_norm']) and (not config['use_instance_norm']):
+            to_add += [
                 NN.ReLU(True)
             ]
 
@@ -111,7 +123,8 @@ class Generator32(NN.Module):
                 # final shape: (bs, 3, 32, 32)
                 NN.Tanh()
             ]
-        elif config['use_instance_norm']:
+        
+        if config['use_instance_norm']:
             to_add += [
                 NN.InstanceNorm2d(config['featuremap_dim'] * 2, affine=True),
                 NN.ReLU(True),
@@ -135,6 +148,30 @@ class Generator32(NN.Module):
                                   ),
                 # final shape: (bs, 3, 32, 32)
                 NN.Tanh()     
+            ]
+        
+        if (not config['use_batch_norm']) and (not config['use_instance_norm']):
+            to_add += [
+                NN.ReLU(True),
+                # (bs, featuremap * 2, 8, 8) -> (bs, featuremap, 16, 16)
+                NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 2,
+                                   out_channels=config['featuremap_dim'],
+                                   kernel_size=4,
+                                   stride=2,
+                                   padding=1, 
+                                   bias=False
+                                  ),
+                NN.ReLU(True),
+                # (bs, featuremap, 16, 16) -> (bs, 3, 32, 32)
+                NN.ConvTranspose2d(in_channels=config['featuremap_dim'],
+                                   out_channels=image_channels,
+                                   kernel_size=4,
+                                   stride=2,
+                                   padding=1,
+                                   bias=False
+                                  ),
+                # final shape: (bs, 3, 32, 32)
+                NN.Tanh()
             ]
 
         self.main = NN.Sequential(*to_add)
@@ -189,9 +226,15 @@ class Generator64(NN.Module):
                 NN.BatchNorm2d(config['featuremap_dim'] * 4),
                 NN.ReLU(True)
             ]
-        elif config['use_instance_norm']:
+        
+        if config['use_instance_norm']:
             to_add += [
                 NN.InstanceNorm2d(config['featuremap_dim'] * 4, affine=True),
+                NN.ReLU(True)
+            ]
+        
+        if (not config['use_batch_norm']) and (not config['use_instance_norm']):
+            to_add += [
                 NN.ReLU(True)
             ]
 
@@ -215,9 +258,15 @@ class Generator64(NN.Module):
                 NN.BatchNorm2d(config['featuremap_dim'] * 4),
                 NN.ReLU(True)
             ]
-        elif config['use_instance_norm']:
+        
+        if config['use_instance_norm']:
             to_add += [
                 NN.InstanceNorm2d(config['featuremap_dim'] * 4, affine=True),
+                NN.ReLU(True)
+            ]
+        
+        if (not config['use_batch_norm']) and (not config['use_instance_norm']):
+            to_add += [
                 NN.ReLU(True)
             ]
 
@@ -271,7 +320,8 @@ class Generator64(NN.Module):
                 # final shape: (bs, 3, 64, 64)
                 NN.Tanh()
             ]
-        elif config['use_instance_norm']:
+        
+        if config['use_instance_norm']:
             to_add += [
                 NN.InstanceNorm2d(config['featuremap_dim'] * 4, affine=True),
                 NN.ReLU(True),
@@ -305,6 +355,39 @@ class Generator64(NN.Module):
                                   ),
                 # final shape: (bs, 3, 64, 64)
                 NN.Tanh()     
+            ]
+        
+        if (not config['use_batch_norm']) and (not config['use_instance_norm']):
+            to_add += [
+                NN.ReLU(True),
+                # (bs, featuremap * 4, 8, 8) -> (bs, featuremap * 2, 16, 16)
+                NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 4, 
+                                   out_channels=config['featuremap_dim'] * 2,
+                                   kernel_size=4,
+                                   stride=2,
+                                   padding=1, 
+                                   bias=False
+                                  ),
+                NN.ReLU(True),
+                # (bs, featuremap * 2, 16, 16) -> (bs, featuremap, 32, 32)
+                NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 2, 
+                                   out_channels=config['featuremap_dim'],
+                                   kernel_size=4,
+                                   stride=2,
+                                   padding=1,
+                                   bias=False
+                                  ),
+                NN.ReLU(True),
+                # (bs, featuremap, 32, 32) -> (bs, featuremap, 64, 64)
+                NN.ConvTranspose2d(in_channels=config['featuremap_dim'], 
+                                   out_channels=image_channels,
+                                   kernel_size=4,
+                                   stride=2,
+                                   padding=1,
+                                   bias=False
+                                  ),
+                # final shape: (bs, 3, 64, 64)
+                NN.Tanh()
             ]
 
         self.main = NN.Sequential(*to_add)

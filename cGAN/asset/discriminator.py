@@ -90,7 +90,8 @@ class Discriminator32(NN.Module):
                          )
                 # final shape: (bs, 1, 1, 1)
             ]
-        elif config['use_instance_norm']:
+        
+        if config['use_instance_norm']:
             to_add += [
                 NN.InstanceNorm2d(config['featuremap_dim'] * 2, affine=True),
                 NN.LeakyReLU(0.2, inplace=True),
@@ -103,6 +104,29 @@ class Discriminator32(NN.Module):
                           bias=False
                          ),
                 NN.InstanceNorm2d(config['featuremap_dim'] * 4, affine=True),
+                NN.LeakyReLU(0.2, inplace=True),
+                # (bs, featuremap * 4, 4, 4) -> (bs, 1, 1, 1)
+                NN.Conv2d(in_channels=config['featuremap_dim'] * 4,
+                          out_channels=1,
+                          kernel_size=4,
+                          stride=1,
+                          padding=0,
+                          bias=False
+                         )
+                # final shape: (bs, 1, 1, 1)
+            ]
+        
+        if (not config['use_batch_norm']) and (not config['use_instance_norm']):
+            to_add += [
+                NN.LeakyReLU(0.2, inplace=True),
+                # (bs, featuremap * 2, 8, 8) -> (bs, featuremap * 4, 4, 4)
+                NN.Conv2d(in_channels=config['featuremap_dim'] * 2,
+                          out_channels=config['featuremap_dim'] * 4,
+                          kernel_size=4,
+                          stride=2,
+                          padding=1,
+                          bias=False
+                         ),
                 NN.LeakyReLU(0.2, inplace=True),
                 # (bs, featuremap * 4, 4, 4) -> (bs, 1, 1, 1)
                 NN.Conv2d(in_channels=config['featuremap_dim'] * 4,
@@ -234,7 +258,8 @@ class Discriminator64(NN.Module):
                          )
                 # final shape: (bs, 1, 1, 1)
             ]
-        elif config['use_instance_norm']:
+        
+        if config['use_instance_norm']:
             to_add += [
                 NN.InstanceNorm2d(config['featuremap_dim'] * 2, affine=True),
                 NN.LeakyReLU(0.2, inplace=True),
@@ -257,6 +282,38 @@ class Discriminator64(NN.Module):
                           bias=False
                          ),
                 NN.InstanceNorm2d(config['featuremap_dim'] * 8, affine=True),
+                NN.LeakyReLU(0.2, inplace=True),
+                # (bs, featuremap * 8, 4, 4) -> (bs, 1, 1, 1)
+                NN.Conv2d(in_channels=config['featuremap_dim'] * 8,
+                          out_channels=1,
+                          kernel_size=4,
+                          stride=1,
+                          padding=0,
+                          bias=False
+                         )
+                # final shape: (bs, 1, 1, 1)
+            ]
+        
+        if (not config['use_batch_norm']) and (not config['use_instance_norm']):
+            to_add += [
+                NN.LeakyReLU(0.2, inplace=True),
+                # (bs, featuremap * 2, 16, 16) -> (bs, featuremap * 4, 8, 8)
+                NN.Conv2d(in_channels=config['featuremap_dim'] * 2,
+                          out_channels=config['featuremap_dim'] * 4,
+                          kernel_size=4,
+                          stride=2,
+                          padding=1,
+                          bias=False
+                         ),
+                NN.LeakyReLU(0.2, inplace=True),
+                # (bs, featuremap * 4, 8, 8) -> (bs, featuremap * 8, 4, 4)
+                NN.Conv2d(in_channels=config['featuremap_dim'] * 4,
+                          out_channels=config['featuremap_dim'] * 8,
+                          kernel_size=4,
+                          stride=2,
+                          padding=1,
+                          bias=False
+                         ),
                 NN.LeakyReLU(0.2, inplace=True),
                 # (bs, featuremap * 8, 4, 4) -> (bs, 1, 1, 1)
                 NN.Conv2d(in_channels=config['featuremap_dim'] * 8,
