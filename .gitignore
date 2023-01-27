@@ -1,2 +1,5 @@
-#Exclude Python folder
+# Exclude Python folder
 __pycache__/
+
+# Exclude launch bash file
+launch.sh

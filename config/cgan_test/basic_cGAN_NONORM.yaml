@@ -1,0 +1,20 @@
+# Generator settings
+gen:
+  latentspace_dim: 100                                                                                      # Dimension of the latent space in the generator model.
+  featuremap_dim: 64                                                                                        # Dimension of the feature map in the generator model.
+  use_batch_norm: false                                                                                     # Specify to use batch normalization.
+  use_instance_norm: false                                                                                  # Specify to use instance normalization.
+                                                                                                            # If both are false then it will be used no normalization.
+                                                                                                            # If both are true then it will be throw an error.
+
+# Test settings
+class_images: 6000                                                                                          # Number of images for each class.
+generated_dataset: ../results/basic_cGAN_NONORM/Dataset_epoch_100/                                          # Path where to save the generated dataset.
+generated_images_path: ../results/basic_cGAN_NONORM/All_generated_images_epoch_100/                         # Path where to save all the generated images without labels.
+
+# Data settings
+image_size: 32                                                                                              # Dimension of the images.
+image_channels: 3                                                                                           # Number of channels in the input images.
+num_label: 10                                                                                               # Number of labels.
+classes: ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']         # Specify the class names.
+gen_model_path: ../results/basic_cGAN_NONORM/Models/Generator/generator_basic_cGAN_NONORM_epoch_99.pth       # Path to the generator model.
