@@ -87,6 +87,8 @@ class Trainer(object):
             self.criterion = NN.BCELoss()
         elif self.config['loss'] == 'BCEWithLogits':
             self.criterion = NN.BCEWithLogitsLoss()
+        elif self.config['loss'] == 'L1loss':
+            self.criterion = NN.L1Loss()
         else:
             raise Exception(f"Loss {self.config['loss']} not implemented. Please fix the configuration file.")
 
