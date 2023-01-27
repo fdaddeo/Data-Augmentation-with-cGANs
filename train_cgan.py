@@ -70,10 +70,10 @@ def main(args):
     print(f"Code will be executed on {device}")
 
     trainer = Trainer(writer=writer,
-                          train_loader=cifar10_dataloader,
-                          device=device,
-                          args=args,
-                          config=config)
+                      train_loader=cifar10_dataloader,
+                      device=device,
+                      args=args,
+                      config=config)
 
     if args.wassertein_loss:
         trainer.train_wassertein()
