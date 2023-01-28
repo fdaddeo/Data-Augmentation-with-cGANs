@@ -23,3 +23,47 @@ Here are the obtained values.
 | `basic_cGAN_SmoothL1loss` - epoch100 | 17.5960    | 36.6824  | 44.6527    | 39.5682 | 27.6457 | 33.0219 | 43.7501 | 31.2807 | 35.8994 | 35.7174 | 44.7159 |
 | `basic_wGAN` - epoch30               | 48.2562    | 68.4371  | 75.0996    | 71.9104 | 54.4870 | 83.9637 | 81.9094 | 84.2123 | 83.1763 | 54.3745 | 72.1841 |
 | `basic_wGAN` - epoch100              | 28.1914    | 54.6635  | 58.3065    | 49.8910 | 38.9040 | 37.1997 | 52.3032 | 38.4660 | 42.6299 | 41.8378 | 53.9019 |
+
+## Accuracy registered
+
+Each generated dataset has been used to perform a classification task. So, it has been performed a fine tuning last 5 epochs over a pretrained AlexNet. The training has been performed usign the generated datasets both as training set and as an augmentation of the original CIFAR10 training set, for which has been used the 70% of images.
+
+Here are the obtained values.
+
+### No Augmentation
+
+| RunName                              | Accuracy |
+|:-------------------------------------|  :---:   |
+| `basic_cGAN` - epoch30               | 57.75 %  |
+| `basic_cGAN` - epoch100              | 63.66 %  |
+| `basic_cGAN_BCEWithLogits` - epoch30 | 57.36 %  |
+| `basic_cGAN_BCEWithLogits` - epoch100| 62.76 %  |
+| `basic_cGAN_NOINIT` - epoch30        | 55.90 %  |
+| `basic_cGAN_NOINIT` - epoch100       | 61.26 %  |
+| `basic_cGAN_NONORM` - epoch30        | 52.05 %  |
+| `basic_cGAN_NONORM` - epoch100       | 63.38 %  |
+| `basic_cGAN_SGD` - epoch30           |  9.86 %  |
+| `basic_cGAN_SGD` - epoch100          | 15.75 %  |
+| `basic_cGAN_SmoothL1loss` - epoch30  | 55.27 %  |
+| `basic_cGAN_SmoothL1loss` - epoch100 | 63.26 %  |
+| `basic_wGAN` - epoch30               | 52.54 %  |
+| `basic_wGAN` - epoch100              | 66.28 %  |
+
+### Augmentation
+
+| RunName                              | Accuracy |
+|:-------------------------------------|  :---:   |
+| `basic_cGAN` - epoch30               | 80.13 %  |
+| `basic_cGAN` - epoch100              | 78.99 %  |
+| `basic_cGAN_BCEWithLogits` - epoch30 | 79.29 %  |
+| `basic_cGAN_BCEWithLogits` - epoch100| 78.66 %  |
+| `basic_cGAN_NOINIT` - epoch30        | 78.81 %  |
+| `basic_cGAN_NOINIT` - epoch100       | 79.85 %  |
+| `basic_cGAN_NONORM` - epoch30        | 79.77 %  |
+| `basic_cGAN_NONORM` - epoch100       | 80.48 %  |
+| `basic_cGAN_SGD` - epoch30           | 81.80 %  |
+| `basic_cGAN_SGD` - epoch100          | 81.39 %  |
+| `basic_cGAN_SmoothL1loss` - epoch30  | 78.98 %  |
+| `basic_cGAN_SmoothL1loss` - epoch100 | 80.08 %  |
+| `basic_wGAN` - epoch30               | 79.23 %  |
+| `basic_wGAN` - epoch100              | 80.30 %  |
