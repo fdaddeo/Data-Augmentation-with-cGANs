@@ -1,44 +1,51 @@
 # Model setting
-use_custom_model: false                                             # Set true to use custom generator and discriminator instead the ones seen during lesson.
+use_custom_model: false                                                                                 # Set true to use custom generator and discriminator instead the ones seen during lesson.
 
 # Generator settings
 gen:
-  latentspace_dim: 100                                                  # Dimension of the latent space in the generator model.
-  featuremap_dim: 64                                                    # Dimension of the feature map in the generator model.
-  initialize_weight: true                                               # Specify if weights have to be initialize as suggested in cGAN paper or not.
-  use_batch_norm: false                                                 # Specify to use batch normalization.
-  use_instance_norm: false                                              # Specify to use instance normalization.
-                                                                        # If both are false then it will be used no normalization.
-                                                                        # If both are true then it will be throw an error.
+  latentspace_dim: 100                                                                                  # Dimension of the latent space in the generator model.
+  featuremap_dim: 64                                                                                    # Dimension of the feature map in the generator model.
+  initialize_weight: true                                                                               # Specify if weights have to be initialize as suggested in cGAN paper or not.
+  use_batch_norm: false                                                                                 # Specify to use batch normalization.
+  use_instance_norm: false                                                                              # Specify to use instance normalization.
+                                                                                                        # If both are false then it will be used no normalization.
+                                                                                                        # If both are true then it will be throw an error.
 
 # Discriminator settings
-dis:    
-  latentspace_dim: 100                                                  # Dimension of the latent space in the discriminator model.
-  featuremap_dim: 64                                                    # Dimension of the feature map in the discriminator model.
-  initialize_weight: true                                               # Specify if weights have to be initialize as suggested in cGAN paper or not.
-  use_batch_norm: false                                                 # Specify to use batch normalization.
-  use_instance_norm: false                                              # Specify to use instance normalization.
-                                                                        # If both are false then it will be used no normalization.
-                                                                        # If both are true then it will be throw an error.
+dis:
+  latentspace_dim: 100                                                                                  # Dimension of the latent space in the discriminator model.
+  featuremap_dim: 64                                                                                    # Dimension of the feature map in the discriminator model.
+  initialize_weight: true                                                                               # Specify if weights have to be initialize as suggested in cGAN paper or not.
+  use_batch_norm: false                                                                                 # Specify to use batch normalization.
+  use_instance_norm: false                                                                              # Specify to use instance normalization.
+                                                                                                        # If both are false then it will be used no normalization.
+                                                                                                        # If both are true then it will be throw an error.
 
 # Training settings
-epochs: 100                                                             # Number of epochs.
-learning_rate: 0.0002                                                   # Initial learning rate.
-loss: BCE                                                               # Loss to be used.
-alpha: 10                                                               # Alpha hyper-parameter for Wassertein Loss.
-optimizer: Adam                                                         # Optimizer to be used.
-beta: 0.5                                                               # Beta hyper-parameter for Adam optimizers
+epochs: 100                                                                                             # Number of epochs.
+learning_rate: 0.0002                                                                                   # Initial learning rate.
+loss: BCE                                                                                               # Loss to be used.
+alpha: 10                                                                                               # Alpha hyper-parameter for Wassertein Loss.
+optimizer: Adam                                                                                         # Optimizer to be used.
+beta: 0.5                                                                                               # Beta hyper-parameter for Adam optimizers
+
+# Test settings
+class_images: 6000                                                                                      # Number of images for each class.
+generated_dataset: ../results/basic_cGAN_NONORM/Dataset_epoch_100/                                      # Path where to save the generated dataset.
+generated_images_path: ../results/basic_cGAN_NONORM/All_generated_images_epoch_100/                     # Path where to save all the generated images without labels.
+gen_model_path: ../results/basic_cGAN_NONORM/Models/Generator/generator_basic_cGAN_NONORM_epoch_99.pth  # Path to the generator model.
 
 # Data settings
-image_size: 32                                                          # Dimension of the images.
-batch_size: 64                                                          # Dimension of the batch.
-image_channels: 3                                                       # Number of channels in the input images.
-num_label: 10                                                           # Number of labels.
-num_workers: 2                                                          # Number of workers in data loader.
-print_every: 50                                                         # Print losses every N iteration.
-save_every: 1                                                           # Save models every N epochs.
-tensorboard_path: ../results/Tensorboard/                               # Path to the tensorboard writer.
-generated_images_path: ../results/basic_cGAN_NONORM/Train_images/       # Path where to save the generated images.
-dataset_path: ../data/                                                  # Path where it is located the dataset.
-gen_checkpoint_path: ../results/basic_cGAN_NONORM/Models/Generator/     # Path in which save the generator models.
-dis_checkpoint_path: ../results/basic_cGAN_NONORM/Models/Discriminator/ # Path in which save the discriminator models.
+image_size: 32                                                                                          # Dimension of the images.
+batch_size: 64                                                                                          # Dimension of the batch.
+image_channels: 3                                                                                       # Number of channels in the input images.
+num_label: 10                                                                                           # Number of labels.
+classes: ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']     # Specify the class names.
+num_workers: 2                                                                                          # Number of workers in data loader.
+print_every: 50                                                                                         # Print losses every N iteration.
+save_every: 1                                                                                           # Save models every N epochs.
+tensorboard_path: ../results/Tensorboard/                                                               # Path to the tensorboard writer.
+generated_images_path: ../results/basic_cGAN_NONORM/Train_images/                                       # Path where to save the generated images.
+dataset_path: ../data/                                                                                  # Path where it is located the dataset.
+gen_checkpoint_path: ../results/basic_cGAN_NONORM/Models/Generator/                                     # Path in which save the generator models.
+dis_checkpoint_path: ../results/basic_cGAN_NONORM/Models/Discriminator/                                 # Path in which save the discriminator models.

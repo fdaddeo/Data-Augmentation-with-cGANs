@@ -40,6 +40,9 @@ def get_config(config: str):
         if ((file['gen']['use_batch_norm'] and file['gen']['use_instance_norm']) or (file['dis']['use_batch_norm'] and file['dis']['use_instance_norm'])):
             raise Exception("ERROR: in Generator and Discriminator 'use_batch_norm' and 'use_instance_norm' cannot be both true. Please fix the configuration file.")
 
+        if len(file['classes']) != file['num_label']:
+            raise Exception("ERROR: 'num_label' and 'classes' must have the same dimension. Please fix the configuration file.")
+
         return file
 
 

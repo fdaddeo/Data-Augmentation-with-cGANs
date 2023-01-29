@@ -11,7 +11,7 @@ def argparser():
     args = argparse.ArgumentParser()
 
     args.add_argument('--device', type=str, default='cuda:0', choices=['cuda:0', 'cpu'],help='Specify the device on which executes the training.', required=False)
-    args.add_argument('--config', type=str, default='./config/cgan_test/basic_cGAN.yaml', help='Path to the configuration file.', required=False)
+    args.add_argument('--config', type=str, default='./config/cgan/basic_cGAN.yaml', help='Path to the configuration file.', required=False)
 
     return args.parse_args()
 
