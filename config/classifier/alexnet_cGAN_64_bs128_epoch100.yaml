@@ -1,0 +1,21 @@
+# Fine-tuninig settings
+model: 'alexnet'                                                                                    # Model to be used.
+epochs: 5                                                                                           # Number of epochs.
+learning_rate: 0.001                                                                                # Initial learning rate.
+loss: CrossEntropy                                                                                  # Loss to be used.
+optimizer: Adam                                                                                     # Optimizer to be used.
+beta: 0.5                                                                                           # Beta hyper-parameter for Adam optimizers
+
+# Data settings
+image_size: 64                                                                                      # Dimension of the images.
+batch_size: 64                                                                                      # Dimension of the batch.
+image_channels: 3                                                                                   # Number of channels in the input images.
+num_label: 10                                                                                       # Number of labels.
+classes: ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'] # Specify the class names.
+num_workers: 2                                                                                      # Number of workers in data loader.
+print_every: 50                                                                                     # Print losses every N iteration.
+save_every: 1                                                                                       # Save model every N epochs.
+tensorboard_path: ../results/Tensorboard/                                                           # Path to the tensorboard writer.
+dataset_path: ../data/                                                                              # Path where it is located the dataset.
+generated_dataset_path: ../results/cGAN_64_bs128/Dataset_epoch_100/                                 # Path where are located the generated images.
+model_path: ../results/cGAN_64_bs128/Models/alexnet_epoch100/                                       # Path in which save the models.

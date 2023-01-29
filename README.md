@@ -23,6 +23,8 @@ Here are the obtained values.
 | `basic_cGAN_SmoothL1loss` - epoch100 | 17.5960    | 36.6824  | 44.6527    | 39.5682 | 27.6457 | 33.0219 | 43.7501 | 31.2807 | 35.8994 | 35.7174 | 44.7159 |
 | `basic_wGAN` - epoch30               | 48.2562    | 68.4371  | 75.0996    | 71.9104 | 54.4870 | 83.9637 | 81.9094 | 84.2123 | 83.1763 | 54.3745 | 72.1841 |
 | `basic_wGAN` - epoch100              | 28.1914    | 54.6635  | 58.3065    | 49.8910 | 38.9040 | 37.1997 | 52.3032 | 38.4660 | 42.6299 | 41.8378 | 53.9019 |
+| `cGAN_64_bs128` - epoch30            | 204.184    | 222.695  | 228.378    | 349.715 | 283.556 | 274.376 | 255.650 | 265.553 | 235.954 | 249.086 | 310.055 |
+| `cGAN_64_bs128` - epoch100           | 152.912    | 217.718  | 224.458    | 231.542 | 219.200 | 198.162 | 230.474 | 222.847 | 218.450 | 222.499 | 238.959 |
 
 ## Accuracy registered
 
@@ -48,6 +50,8 @@ Here are the obtained values.
 | `basic_cGAN_SmoothL1loss` - epoch100 | 63.26 %  |
 | `basic_wGAN` - epoch30               | 52.54 %  |
 | `basic_wGAN` - epoch100              | 66.28 %  |
+| `cGAN_64_bs128` - epoch30            | 16.97 %  |
+| `cGAN_64_bs128` - epoch100           | 26.91 %  |
 
 ### Augmentation
 
@@ -67,3 +71,5 @@ Here are the obtained values.
 | `basic_cGAN_SmoothL1loss` - epoch100 | 80.08 %  |
 | `basic_wGAN` - epoch30               | 79.23 %  |
 | `basic_wGAN` - epoch100              | 80.30 %  |
+| `cGAN_64_bs128` - epoch30            | 81.11 %  |
+| `cGAN_64_bs128` - epoch100           | 80.87 %  |
