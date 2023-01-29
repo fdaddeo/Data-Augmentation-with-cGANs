@@ -348,7 +348,7 @@ class Trainer(object):
                         fake = self.generate_test().detach().cpu()
                 
                     im_grid = vutils.make_grid(fake, nrow=8, padding=2, normalize=True)
-                    vutils.save_image(im_grid, os.path.join(self.config['generated_images_path'], f"{epoch}_{iters}.jpg"))
+                    vutils.save_image(im_grid, os.path.join(self.config['train_generated_images_path'], f"{epoch}_{iters}.jpg"))
 
                 iters += 1
             
@@ -455,7 +455,7 @@ class Trainer(object):
                         fake = self.generate_test().detach().cpu()
                     
                     im_grid = vutils.make_grid(fake, padding=2, normalize=True)
-                    vutils.save_image(im_grid, os.path.join(self.config['generated_images_path'], f"{epoch}_{iters}.jpg"))
+                    vutils.save_image(im_grid, os.path.join(self.config['train_generated_images_path'], f"{epoch}_{iters}.jpg"))
 
                 iters += 1
             
