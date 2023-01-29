@@ -8,8 +8,8 @@ from torch.utils.data.dataloader import DataLoader
 
 import torchvision.utils as vutils
 
-from .asset.generator import Generator32, Generator64
-from .asset.discriminator import Discriminator32, Discriminator64
+from .asset.generator import Generator32, Generator64, GeneratorCustom
+from .asset.discriminator import Discriminator32, Discriminator64, DiscriminatorCustom
 
 class Trainer(object):
     """
@@ -46,32 +46,42 @@ class Trainer(object):
         self.discriminator_name = f"discriminator_{self.args.run_name}"
 
         # Initialize Models
-        if self.config['image_size'] == 32:
-            self.generator = Generator32(config=self.config['gen'],
-                                         num_label=self.config['num_label'],
-                                         image_channels=self.config['image_channels']
-                                        ).to(self.device)
-
-            self.discriminator = Discriminator32(config=self.config['dis'],
-                                                 num_label=self.config['num_label'],
-                                                 image_channels=self.config['image_channels'],
-                                                 loss=self.config['loss'],
-                                                 wass_loss=self.args.wassertein_loss
-                                                ).to(self.device)
-        elif self.config['image_size'] == 64:
-            self.generator = Generator64(config=self.config['gen'],
-                                         num_label=self.config['num_label'],
-                                         image_channels=self.config['image_channels']
-                                        ).to(self.device)
-
-            self.discriminator = Discriminator64(config=self.config['dis'],
-                                                 num_label=self.config['num_label'],
-                                                 image_channels=self.config['image_channels'],
-                                                 loss=self.config['loss'],
-                                                 wass_loss=self.args.wassertein_loss
-                                                ).to(self.device)
+        if self.config['use_custom_model']:
+            self.generator = GeneratorCustom(config=self.config['gen'],
+                                             num_label=self.config['num_label'],
+                                             image_channels=self.config['image_channels']
+                                            ).to(self.device)
+            
+            self.discriminator = DiscriminatorCustom(config=self.config['dis'],
+                                                     num_label=self.config['num_label'],
+                                                     image_channels=self.config['image_channels'],
+                                                     loss=self.config['loss']
+                                                    ).to(self.device)
         else:
-            raise Exception(f"Image size {self.config['image_size']} not implemented. Please fix the configuration file.")
+            if self.config['image_size'] == 32:
+                self.generator = Generator32(config=self.config['gen'],
+                                             num_label=self.config['num_label'],
+                                             image_channels=self.config['image_channels']
+                                            ).to(self.device)
+
+                self.discriminator = Discriminator32(config=self.config['dis'],
+                                                     num_label=self.config['num_label'],
+                                                     image_channels=self.config['image_channels'],
+                                                     loss=self.config['loss']
+                                                    ).to(self.device)
+            elif self.config['image_size'] == 64:
+                self.generator = Generator64(config=self.config['gen'],
+                                             num_label=self.config['num_label'],
+                                             image_channels=self.config['image_channels']
+                                            ).to(self.device)
+
+                self.discriminator = Discriminator64(config=self.config['dis'],
+                                                     num_label=self.config['num_label'],
+                                                     image_channels=self.config['image_channels'],
+                                                     loss=self.config['loss']
+                                                    ).to(self.device)
+            else:
+                raise Exception(f"Image size {self.config['image_size']} not implemented. Please fix the configuration file.")
 
         # Define batch of latent vectors that it will be used to visualize the progression of the generator
         self.fixed_noise = torch.randn(8, self.config['gen']['latentspace_dim'], 1, 1, device=device)
@@ -87,10 +97,12 @@ class Trainer(object):
             self.criterion = NN.BCELoss()
         elif self.config['loss'] == 'BCEWithLogits':
             self.criterion = NN.BCEWithLogitsLoss()
-        elif self.config['loss'] == 'L1loss':
+        elif self.config['loss'] == 'L1':
             self.criterion = NN.L1Loss()
-        elif self.config['loss'] == 'SmoothL1loss':
+        elif self.config['loss'] == 'SmoothL1':
             self.criterion = NN.SmoothL1Loss()
+        elif self.config['loss'] == 'Wassertein':
+            pass
         else:
             raise Exception(f"Loss {self.config['loss']} not implemented. Please fix the configuration file.")
 

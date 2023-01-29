@@ -3,7 +3,7 @@ import torch
 
 import torchvision.utils as vutils
 
-from .asset.generator import Generator32, Generator64
+from .asset.generator import Generator32, Generator64, GeneratorCustom
 
 class Tester(object):
     """
@@ -25,18 +25,24 @@ class Tester(object):
         self.config = config
 
         # Initialize Models
-        if self.config['image_size'] == 32:
-            self.generator = Generator32(config=self.config['gen'],
-                                         num_label=self.config['num_label'],
-                                         image_channels=self.config['image_channels']
-                                        ).to(self.device)
-        elif self.config['image_size'] == 64:
-            self.generator = Generator64(config=self.config['gen'],
-                                         num_label=self.config['num_label'],
-                                         image_channels=self.config['image_channels']
-                                        ).to(self.device)
+        if self.config['use_custom_model']:
+            self.generator = GeneratorCustom(config=self.config['gen'],
+                                             num_label=self.config['num_label'],
+                                             image_channels=self.config['image_channels']
+                                            ).to(self.device)
         else:
-            raise Exception(f"Image size {self.config['image_size']} not implemented. Please fix the configuration file.")
+            if self.config['image_size'] == 32:
+                self.generator = Generator32(config=self.config['gen'],
+                                             num_label=self.config['num_label'],
+                                             image_channels=self.config['image_channels']
+                                            ).to(self.device)
+            elif self.config['image_size'] == 64:
+                self.generator = Generator64(config=self.config['gen'],
+                                             num_label=self.config['num_label'],
+                                             image_channels=self.config['image_channels']
+                                            ).to(self.device)
+            else:
+                raise Exception(f"Image size {self.config['image_size']} not implemented. Please fix the configuration file.")
 
         # Load trained models
         self.generator.load_state_dict(torch.load(self.config['gen_model_path']))

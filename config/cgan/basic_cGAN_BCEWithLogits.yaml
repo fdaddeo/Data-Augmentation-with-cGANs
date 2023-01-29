@@ -1,3 +1,6 @@
+# Model setting
+use_custom_model: false                                             # Set true to use custom generator and discriminator instead the ones seen during lesson.
+
 # Generator settings
 gen:
   latentspace_dim: 100                                                            # Dimension of the latent space in the generator model.

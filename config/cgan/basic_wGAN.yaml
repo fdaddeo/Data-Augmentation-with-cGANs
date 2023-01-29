@@ -1,3 +1,6 @@
+# Model setting
+use_custom_model: false                                             # Set true to use custom generator and discriminator instead the ones seen during lesson.
+
 # Generator settings
 gen:
   latentspace_dim: 100                                              # Dimension of the latent space in the generator model.
@@ -21,7 +24,7 @@ dis:
 # Training settings
 epochs: 100                                                         # Number of epochs.
 learning_rate: 0.0002                                               # Initial learning rate.
-loss: BCE                                                           # Loss to be used.
+loss: Wassertein                                                    # Loss to be used.
 alpha: 10                                                           # Alpha hyper-parameter for Wassertein Loss.
 optimizer: Adam                                                     # Optimizer to be used.
 beta: 0.5                                                           # Beta hyper-parameter for Adam optimizers
