@@ -8,7 +8,9 @@
 - `Seaborn`
 - `Sklearn`
 
-## CGAN training
+## CGAN 
+
+### Training
 
 To train the CGAN is necessary to create a configuration file and then execute:
 
@@ -16,7 +18,7 @@ To train the CGAN is necessary to create a configuration file and then execute:
 
 NOTE: examples of configuration file are contained in `config/cgan/` folder.
 
-## CGAN testing
+### Testing
 
 To test the CGAN execute:
 
@@ -24,7 +26,9 @@ To test the CGAN execute:
 
 NOTE: it's required the same configuration file used during the training.
 
-## Classificator training
+## Classificator 
+
+### Training
 
 To train and test the classificator it's required to create a configuration file and then execute:
 
@@ -32,13 +36,15 @@ To train and test the classificator it's required to create a configuration file
 
 NOTE: examples of configuration file are contained in `config/classifier/` folder.
 
-## Results visualization
+## Results 
+
+### Graphs visualization
 
 To visualize the obtained results, both for CGAN and classifier, execute:
 
 `tensorboard --logdir=<path/to/tensorboard/folder/>`
 
-## FID scores registered
+### FID scores registered
 
 Each model has been used to generate a new CIFAR10 dataset, that has been compared with the original one class by class through the FID score.
 Here are the obtained values.
@@ -70,13 +76,13 @@ Here are the obtained values.
 | `custom_cGAN_2` - epoch30            | 104.208    | 159.158  | 150.377    | 174.049 | 154.885 | 177.240 | 186.384 | 210.636 | 175.558 | 136.752 | 133.861 |
 | `custom_cGAN_2` - epoch100           | 73.0790    | 111.615  | 184.046    | 175.774 | 139.551 | 151.019 | 128.772 | 141.181 | 174.255 | 126.151 | 210.390 |
 
-## Accuracy registered
+### Accuracy registered
 
 Each generated dataset has been used to perform a classification task. So, it has been performed a fine tuning last 5 epochs over a pretrained AlexNet. The training has been performed using the generated datasets both as training set and as augmentation of the original CIFAR10 training set, for which has been used the 70% of images. The reference value for the accuracy over the original AlexNet was 9.1 %.
 
 Here are the obtained values.
 
-### No Augmentation
+#### No Augmentation
 
 | RunName                              | Accuracy |
 |:-------------------------------------|  :---:   |
@@ -105,7 +111,7 @@ Here are the obtained values.
 | `custom_cGAN_2` - epoch30            | 22.38 %  |
 | `custom_cGAN_2` - epoch100           | 24.77 %  |
 
-### Augmentation
+#### Augmentation
 
 | RunName                              | Accuracy |
 |:-------------------------------------|  :---:   |
