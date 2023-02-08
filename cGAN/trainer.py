@@ -113,6 +113,9 @@ class Trainer(object):
         elif self.config['optimizer'] == 'SGD':
             self.optimizerG = optim.SGD(self.generator.parameters(), lr=self.config['learning_rate'], momentum=0.9)
             self.optimizerD = optim.SGD(self.discriminator.parameters(), lr=self.config['learning_rate'], momentum=0.9)
+        elif self.config['optimizer'] == 'Adamax':
+            self.optimizerG = optim.Adamax(self.generator.parameters(), lr=self.config['learning_rate'], betas=(self.config['beta'], 0.999))
+            self.optimizerD = optim.Adamax(self.discriminator.parameters(), lr=self.config['learning_rate'], betas=(self.config['beta'], 0.999))
         else:
             raise Exception(f"{self.config['optimizer']} not implemented. Please fix the configuration file.")
 
