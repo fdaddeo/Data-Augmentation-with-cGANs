@@ -262,7 +262,7 @@ class Trainer(object):
         for epoch in range(self.config['epochs']):
             for idx, (images, labels) in enumerate(self.train_loader, 0):
                 ############################
-                # (1) Update Discriminator network: maximize log(D(x)) + log(1 - D(G(z)))
+                # (1) Update Discriminator network
                 ###########################
 
                 ## First train with all-real batch
@@ -316,7 +316,7 @@ class Trainer(object):
                 self.optimizerD.step()
 
                 ############################
-                # (2) Update Generator network: maximize log(D(G(z)))
+                # (2) Update Generator network
                 ###########################
 
                 self.generator.zero_grad()
@@ -371,7 +371,7 @@ class Trainer(object):
         for epoch in range(self.config['epochs']):
             for idx, (images, labels) in enumerate(self.train_loader, 0):
                 ############################
-                # (1) Update Discriminator network: maximize log(D(x)) + log(1 - D(G(z)))
+                # (1) Update Discriminator network
                 ###########################
                 
                 ## First train with all-real batch
@@ -423,7 +423,7 @@ class Trainer(object):
                 self.optimizerD.step()
 
                 ############################
-                # (2) Update Generator network: maximize log(D(G(z)))
+                # (2) Update Generator network
                 ###########################
                 
                 self.generator.zero_grad()
