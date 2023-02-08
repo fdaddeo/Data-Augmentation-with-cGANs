@@ -491,9 +491,9 @@ class GeneratorCustom(NN.Module):
         
         ## Main block
         to_add = [
-            # (bs, featuremap * 4, 4, 4) -> (bs, featuremap * 3, 8, 8)
+            # (bs, featuremap * 4, 4, 4) -> (bs, featuremap * 4, 8, 8)
             NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 4,
-                               out_channels=config['featuremap_dim'] * 3, 
+                               out_channels=config['featuremap_dim'] * 4, 
                                kernel_size=4,
                                stride=2,
                                padding=1,
@@ -503,9 +503,29 @@ class GeneratorCustom(NN.Module):
 
         if config['use_batch_norm']:
             to_add += [
+                NN.BatchNorm2d(config['featuremap_dim'] * 4),
+                NN.ReLU(True),
+                # (bs, featuremap * 4, 8, 8) -> (bs, featuremap * 3, 8, 8)
+                NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 4,
+                                   out_channels=config['featuremap_dim'] * 3, 
+                                   kernel_size=3,
+                                   stride=1,
+                                   padding=1,
+                                   bias=False
+                                  ),
                 NN.BatchNorm2d(config['featuremap_dim'] * 3),
                 NN.ReLU(True),
-                # (bs, featuremap * 3, 8, 8) -> (bs, featuremap * 2, 8, 8)
+                # (bs, featuremap * 3, 8, 8) -> (bs, featuremap * 3, 16, 16)
+                NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 3,
+                                   out_channels=config['featuremap_dim'] * 3,
+                                   kernel_size=4,
+                                   stride=2,
+                                   padding=1, 
+                                   bias=False
+                                  ),
+                NN.BatchNorm2d(config['featuremap_dim'] * 3),
+                NN.ReLU(True),
+                # (bs, featuremap * 3, 16, 16) -> (bs, featuremap * 2, 16, 16)
                 NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 3,
                                    out_channels=config['featuremap_dim'] * 2,
                                    kernel_size=3,
@@ -515,31 +535,41 @@ class GeneratorCustom(NN.Module):
                                   ),
                 NN.BatchNorm2d(config['featuremap_dim'] * 2),
                 NN.ReLU(True),
-                # (bs, featuremap * 2, 8, 8) -> (bs, featuremap, 16, 16)
+                # (bs, featuremap * 2, 16, 16) -> (bs, featuremap * 2, 32, 32)
                 NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 2,
-                                   out_channels=config['featuremap_dim'],
+                                   out_channels=config['featuremap_dim'] * 2,
                                    kernel_size=4,
                                    stride=2,
                                    padding=1, 
+                                   bias=False
+                                  ),
+                NN.BatchNorm2d(config['featuremap_dim'] * 2),
+                NN.ReLU(True),
+                # (bs, featuremap * 2, 32, 32) -> (bs, featuremap, 32, 32)
+                NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 2,
+                                   out_channels=config['featuremap_dim'],
+                                   kernel_size=3,
+                                   stride=1,
+                                   padding=1,
                                    bias=False
                                   ),
                 NN.BatchNorm2d(config['featuremap_dim']),
                 NN.ReLU(True),
-                # (bs, featuremap, 16, 16) -> (bs, featuremap // 2, 16, 16)
+                # (bs, featuremap, 32, 32) -> (bs, featuremap // 2, 32, 32)
                 NN.ConvTranspose2d(in_channels=config['featuremap_dim'],
                                    out_channels=config['featuremap_dim'] // 2,
                                    kernel_size=3,
                                    stride=1,
-                                   padding=1, 
+                                   padding=1,
                                    bias=False
                                   ),
                 NN.BatchNorm2d(config['featuremap_dim'] // 2),
                 NN.ReLU(True),
-                # (bs, featuremap // 2, 16, 16) -> (bs, 3, 32, 32)
+                # (bs, featuremap // 2, 32, 32) -> (bs, 3, 32, 32)
                 NN.ConvTranspose2d(in_channels=config['featuremap_dim'] // 2,
                                    out_channels=image_channels,
-                                   kernel_size=4,
-                                   stride=2,
+                                   kernel_size=3,
+                                   stride=1,
                                    padding=1,
                                    bias=False
                                   ),
@@ -549,9 +579,29 @@ class GeneratorCustom(NN.Module):
         
         if config['use_instance_norm']:
             to_add += [
+                NN.InstanceNorm2d(config['featuremap_dim'] * 4, affine=True),
+                NN.ReLU(True),
+                # (bs, featuremap * 4, 8, 8) -> (bs, featuremap * 3, 8, 8)
+                NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 4,
+                                   out_channels=config['featuremap_dim'] * 3, 
+                                   kernel_size=3,
+                                   stride=1,
+                                   padding=1,
+                                   bias=False
+                                  ),
                 NN.InstanceNorm2d(config['featuremap_dim'] * 3, affine=True),
                 NN.ReLU(True),
-                # (bs, featuremap * 3, 8, 8) -> (bs, featuremap * 2, 8, 8)
+                # (bs, featuremap * 3, 8, 8) -> (bs, featuremap * 3, 16, 16)
+                NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 3,
+                                   out_channels=config['featuremap_dim'] * 3,
+                                   kernel_size=4,
+                                   stride=2,
+                                   padding=1, 
+                                   bias=False
+                                  ),
+                NN.InstanceNorm2d(config['featuremap_dim'] * 3, affine=True),
+                NN.ReLU(True),
+                # (bs, featuremap * 3, 16, 16) -> (bs, featuremap * 2, 16, 16)
                 NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 3,
                                    out_channels=config['featuremap_dim'] * 2,
                                    kernel_size=3,
@@ -561,42 +611,70 @@ class GeneratorCustom(NN.Module):
                                   ),
                 NN.InstanceNorm2d(config['featuremap_dim'] * 2, affine=True),
                 NN.ReLU(True),
-                # (bs, featuremap * 2, 8, 8) -> (bs, featuremap, 16, 16)
+                # (bs, featuremap * 2, 16, 16) -> (bs, featuremap * 2, 32, 32)
                 NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 2,
-                                   out_channels=config['featuremap_dim'],
+                                   out_channels=config['featuremap_dim'] * 2,
                                    kernel_size=4,
                                    stride=2,
                                    padding=1, 
                                    bias=False
                                   ),
+                NN.InstanceNorm2d(config['featuremap_dim'] * 2, affine=True),
+                NN.ReLU(True),
+                # (bs, featuremap * 2, 32, 32) -> (bs, featuremap, 32, 32)
+                NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 2,
+                                   out_channels=config['featuremap_dim'],
+                                   kernel_size=3,
+                                   stride=1,
+                                   padding=1,
+                                   bias=False
+                                  ),
                 NN.InstanceNorm2d(config['featuremap_dim'], affine=True),
-                NN.ReLU(True),                
-                # (bs, featuremap, 16, 16) -> (bs, featuremap // 2, 16, 16)
+                NN.ReLU(True),
+                # (bs, featuremap, 32, 32) -> (bs, featuremap // 2, 32, 32)
                 NN.ConvTranspose2d(in_channels=config['featuremap_dim'],
                                    out_channels=config['featuremap_dim'] // 2,
                                    kernel_size=3,
                                    stride=1,
-                                   padding=1, 
+                                   padding=1,
                                    bias=False
                                   ),
                 NN.InstanceNorm2d(config['featuremap_dim'] // 2, affine=True),
                 NN.ReLU(True),
-                # (bs, featuremap // 2, 16, 16) -> (bs, 3, 32, 32)
+                # (bs, featuremap // 2, 32, 32) -> (bs, 3, 32, 32)
                 NN.ConvTranspose2d(in_channels=config['featuremap_dim'] // 2,
                                    out_channels=image_channels,
-                                   kernel_size=4,
-                                   stride=2,
+                                   kernel_size=3,
+                                   stride=1,
                                    padding=1,
                                    bias=False
                                   ),
                 # final shape: (bs, 3, 32, 32)
-                NN.Tanh()     
+                NN.Tanh()
             ]
         
         if (not config['use_batch_norm']) and (not config['use_instance_norm']):
-            to_add += [
+            to_add += [                
                 NN.ReLU(True),
-                # (bs, featuremap * 3, 8, 8) -> (bs, featuremap * 2, 8, 8)
+                # (bs, featuremap * 4, 8, 8) -> (bs, featuremap * 3, 8, 8)
+                NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 4,
+                                   out_channels=config['featuremap_dim'] * 3, 
+                                   kernel_size=3,
+                                   stride=1,
+                                   padding=1,
+                                   bias=False
+                                  ),
+                NN.ReLU(True),
+                # (bs, featuremap * 3, 8, 8) -> (bs, featuremap * 3, 16, 16)
+                NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 3,
+                                   out_channels=config['featuremap_dim'] * 3,
+                                   kernel_size=4,
+                                   stride=2,
+                                   padding=1, 
+                                   bias=False
+                                  ),
+                NN.ReLU(True),
+                # (bs, featuremap * 3, 16, 16) -> (bs, featuremap * 2, 16, 16)
                 NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 3,
                                    out_channels=config['featuremap_dim'] * 2,
                                    kernel_size=3,
@@ -605,29 +683,38 @@ class GeneratorCustom(NN.Module):
                                    bias=False
                                   ),
                 NN.ReLU(True),
-                # (bs, featuremap * 2, 8, 8) -> (bs, featuremap, 16, 16)
+                # (bs, featuremap * 2, 16, 16) -> (bs, featuremap * 2, 32, 32)
                 NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 2,
-                                   out_channels=config['featuremap_dim'],
+                                   out_channels=config['featuremap_dim'] * 2,
                                    kernel_size=4,
                                    stride=2,
                                    padding=1, 
                                    bias=False
                                   ),
                 NN.ReLU(True),
-                # (bs, featuremap, 16, 16) -> (bs, featuremap // 2, 16, 16)
+                # (bs, featuremap * 2, 32, 32) -> (bs, featuremap, 32, 32)
+                NN.ConvTranspose2d(in_channels=config['featuremap_dim'] * 2,
+                                   out_channels=config['featuremap_dim'],
+                                   kernel_size=3,
+                                   stride=1,
+                                   padding=1,
+                                   bias=False
+                                  ),
+                NN.ReLU(True),
+                # (bs, featuremap, 32, 32) -> (bs, featuremap // 2, 32, 32)
                 NN.ConvTranspose2d(in_channels=config['featuremap_dim'],
                                    out_channels=config['featuremap_dim'] // 2,
                                    kernel_size=3,
                                    stride=1,
-                                   padding=1, 
+                                   padding=1,
                                    bias=False
                                   ),
                 NN.ReLU(True),
-                # (bs, featuremap // 2, 16, 16) -> (bs, 3, 32, 32)
+                # (bs, featuremap // 2, 32, 32) -> (bs, 3, 32, 32)
                 NN.ConvTranspose2d(in_channels=config['featuremap_dim'] // 2,
                                    out_channels=image_channels,
-                                   kernel_size=4,
-                                   stride=2,
+                                   kernel_size=3,
+                                   stride=1,
                                    padding=1,
                                    bias=False
                                   ),

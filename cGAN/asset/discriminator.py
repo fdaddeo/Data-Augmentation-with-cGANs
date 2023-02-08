@@ -391,11 +391,11 @@ class DiscriminatorCustom(NN.Module):
 
         ## Main block
         to_add = [
-            # (bs, featuremap, 16, 16) -> (bs, featuremap * 2, 8, 8)
+            # (bs, featuremap, 16, 16) -> (bs, featuremap * 2, 16, 16)
             NN.Conv2d(in_channels=config['featuremap_dim'],
                       out_channels=config['featuremap_dim'] * 2,
-                      kernel_size=4,
-                      stride=2,
+                      kernel_size=3,
+                      stride=1,
                       padding=1,
                       bias=False
                      )
@@ -403,6 +403,16 @@ class DiscriminatorCustom(NN.Module):
 
         if config['use_batch_norm']:
             to_add += [
+                NN.BatchNorm2d(config['featuremap_dim'] * 2),
+                NN.LeakyReLU(0.2, inplace=True),
+                # (bs, featuremap * 2, 16, 16) -> (bs, featuremap * 2, 8, 8)
+                NN.Conv2d(in_channels=config['featuremap_dim'] * 2,
+                          out_channels=config['featuremap_dim'] * 2,
+                          kernel_size=4,
+                          stride=2,
+                          padding=1,
+                          bias=False
+                         ),
                 NN.BatchNorm2d(config['featuremap_dim'] * 2),
                 NN.LeakyReLU(0.2, inplace=True),
                 # (bs, featuremap * 2, 8, 8) -> (bs, featuremap * 3, 8, 8)
@@ -415,11 +425,21 @@ class DiscriminatorCustom(NN.Module):
                          ),
                 NN.BatchNorm2d(config['featuremap_dim'] * 3),
                 NN.LeakyReLU(0.2, inplace=True),
-                # (bs, featuremap * 3, 8, 8) -> (bs, featuremap * 4, 4, 4)
+                # (bs, featuremap * 3, 8, 8) -> (bs, featuremap * 3, 4, 4)
                 NN.Conv2d(in_channels=config['featuremap_dim'] * 3,
-                          out_channels=config['featuremap_dim'] * 4,
+                          out_channels=config['featuremap_dim'] * 3,
                           kernel_size=4,
                           stride=2,
+                          padding=1,
+                          bias=False
+                         ),
+                NN.BatchNorm2d(config['featuremap_dim'] * 3),
+                NN.LeakyReLU(0.2, inplace=True),
+                # (bs, featuremap * 3, 4, 4) -> (bs, featuremap * 4, 4, 4)
+                NN.Conv2d(in_channels=config['featuremap_dim'] * 3,
+                          out_channels=config['featuremap_dim'] * 4,
+                          kernel_size=3,
+                          stride=1,
                           padding=1,
                           bias=False
                          ),
@@ -440,6 +460,16 @@ class DiscriminatorCustom(NN.Module):
             to_add += [
                 NN.InstanceNorm2d(config['featuremap_dim'] * 2, affine=True),
                 NN.LeakyReLU(0.2, inplace=True),
+                # (bs, featuremap * 2, 16, 16) -> (bs, featuremap * 2, 8, 8)
+                NN.Conv2d(in_channels=config['featuremap_dim'] * 2,
+                          out_channels=config['featuremap_dim'] * 2,
+                          kernel_size=4,
+                          stride=2,
+                          padding=1,
+                          bias=False
+                         ),
+                NN.InstanceNorm2d(config['featuremap_dim'] * 2, affine=True),
+                NN.LeakyReLU(0.2, inplace=True),
                 # (bs, featuremap * 2, 8, 8) -> (bs, featuremap * 3, 8, 8)
                 NN.Conv2d(in_channels=config['featuremap_dim'] * 2,
                           out_channels=config['featuremap_dim'] * 3,
@@ -450,11 +480,21 @@ class DiscriminatorCustom(NN.Module):
                          ),
                 NN.InstanceNorm2d(config['featuremap_dim'] * 3, affine=True),
                 NN.LeakyReLU(0.2, inplace=True),
-                # (bs, featuremap * 3, 8, 8) -> (bs, featuremap * 4, 4, 4)
+                # (bs, featuremap * 3, 8, 8) -> (bs, featuremap * 3, 4, 4)
                 NN.Conv2d(in_channels=config['featuremap_dim'] * 3,
-                          out_channels=config['featuremap_dim'] * 4,
+                          out_channels=config['featuremap_dim'] * 3,
                           kernel_size=4,
                           stride=2,
+                          padding=1,
+                          bias=False
+                         ),
+                NN.InstanceNorm2d(config['featuremap_dim'] * 3, affine=True),
+                NN.LeakyReLU(0.2, inplace=True),
+                # (bs, featuremap * 3, 4, 4) -> (bs, featuremap * 4, 4, 4)
+                NN.Conv2d(in_channels=config['featuremap_dim'] * 3,
+                          out_channels=config['featuremap_dim'] * 4,
+                          kernel_size=3,
+                          stride=1,
                           padding=1,
                           bias=False
                          ),
@@ -474,6 +514,15 @@ class DiscriminatorCustom(NN.Module):
         if (not config['use_batch_norm']) and (not config['use_instance_norm']):
             to_add += [
                 NN.LeakyReLU(0.2, inplace=True),
+                # (bs, featuremap * 2, 16, 16) -> (bs, featuremap * 2, 8, 8)
+                NN.Conv2d(in_channels=config['featuremap_dim'] * 2,
+                          out_channels=config['featuremap_dim'] * 2,
+                          kernel_size=4,
+                          stride=2,
+                          padding=1,
+                          bias=False
+                         ),
+                NN.LeakyReLU(0.2, inplace=True),
                 # (bs, featuremap * 2, 8, 8) -> (bs, featuremap * 3, 8, 8)
                 NN.Conv2d(in_channels=config['featuremap_dim'] * 2,
                           out_channels=config['featuremap_dim'] * 3,
@@ -483,11 +532,20 @@ class DiscriminatorCustom(NN.Module):
                           bias=False
                          ),
                 NN.LeakyReLU(0.2, inplace=True),
-                # (bs, featuremap * 3, 8, 8) -> (bs, featuremap * 4, 4, 4)
+                # (bs, featuremap * 3, 8, 8) -> (bs, featuremap * 3, 4, 4)
                 NN.Conv2d(in_channels=config['featuremap_dim'] * 3,
-                          out_channels=config['featuremap_dim'] * 4,
+                          out_channels=config['featuremap_dim'] * 3,
                           kernel_size=4,
                           stride=2,
+                          padding=1,
+                          bias=False
+                         ),
+                NN.LeakyReLU(0.2, inplace=True),
+                # (bs, featuremap * 3, 4, 4) -> (bs, featuremap * 4, 4, 4)
+                NN.Conv2d(in_channels=config['featuremap_dim'] * 3,
+                          out_channels=config['featuremap_dim'] * 4,
+                          kernel_size=3,
+                          stride=1,
                           padding=1,
                           bias=False
                          ),
