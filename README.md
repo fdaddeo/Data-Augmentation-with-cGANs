@@ -25,10 +25,18 @@ Here are the obtained values.
 | `basic_wGAN` - epoch100              | 28.1914    | 54.6635  | 58.3065    | 49.8910 | 38.9040 | 37.1997 | 52.3032 | 38.4660 | 42.6299 | 41.8378 | 53.9019 |
 | `cGAN_64_bs128` - epoch30            | 204.184    | 222.695  | 228.378    | 349.715 | 283.556 | 274.376 | 255.650 | 265.553 | 235.954 | 249.086 | 310.055 |
 | `cGAN_64_bs128` - epoch100           | 152.912    | 217.718  | 224.458    | 231.542 | 219.200 | 198.162 | 230.474 | 222.847 | 218.450 | 222.499 | 238.959 |
+| `custom_cGAN` - epoch30              | 35.8927    | 58.0080  | 68.7365    | 69.9182 | 50.5328 | 72.1439 | 70.0219 | 68.9697 | 88.6795 | 62.6273 | 80.5999 |
+| `custom_cGAN` - epoch100             | 26.6001    | 46.4214  | 52.4751    | 59.7820 | 50.5737 | 49.3311 | 83.9058 | 71.9584 | 51.5222 | 56.8851 | 52.5101 |
+| `custom_wGAN` - epoch30              | 69.4120    | 93.0382  | 102.035    | 104.180 | 98.7037 | 92.2057 | 129.500 | 137.826 | 119.934 | 66.3337 | 94.8316 |
+| `custom_wGAN` - epoch100             | 42.3130    | 62.3584  | 80.7449    | 79.4685 | 59.9742 | 69.1960 | 85.8635 | 61.7054 | 68.5446 | 54.6184 | 72.8860 |
+| `custom_cGAN_SmoothL1loss` - epoch30 | 45.7718    | 61.5156  | 98.6816    | 68.1409 | 69.3301 | 61.7120 | 81.4490 | 69.4798 | 92.9643 | 56.3719 | 94.6059 |
+| `custom_cGAN_SmoothL1loss` - epoch100| 18.4845    | 37.1320  | 40.4285    | 38.8271 | 31.3358 | 32.3157 | 47.3368 | 43.6842 | 35.2573 | 34.4679 | 40.3287 |
+| `custom_cGAN_2` - epoch30            | 104.208    | 159.158  | 150.377    | 174.049 | 154.885 | 177.240 | 186.384 | 210.636 | 175.558 | 136.752 | 133.861 |
+| `custom_cGAN_2` - epoch100           | 73.0790    | 111.615  | 184.046    | 175.774 | 139.551 | 151.019 | 128.772 | 141.181 | 174.255 | 126.151 | 210.390 |
 
 ## Accuracy registered
 
-Each generated dataset has been used to perform a classification task. So, it has been performed a fine tuning last 5 epochs over a pretrained AlexNet. The training has been performed usign the generated datasets both as training set and as an augmentation of the original CIFAR10 training set, for which has been used the 70% of images.
+Each generated dataset has been used to perform a classification task. So, it has been performed a fine tuning last 5 epochs over a pretrained AlexNet. The training has been performed usign the generated datasets both as training set and as an augmentation of the original CIFAR10 training set, for which has been used the 70% of images. The reference value for the accuracy of the original AlexNet was 9.1 %.
 
 Here are the obtained values.
 
@@ -52,6 +60,14 @@ Here are the obtained values.
 | `basic_wGAN` - epoch100              | 66.28 %  |
 | `cGAN_64_bs128` - epoch30            | 16.97 %  |
 | `cGAN_64_bs128` - epoch100           | 26.91 %  |
+| `custom_cGAN` - epoch30              | 42.74 %  |
+| `custom_cGAN` - epoch100             | 57.42 %  |
+| `custom_wGAN` - epoch30              | 35.85 %  |
+| `custom_wGAN` - epoch100             | 54.04 %  |
+| `custom_cGAN_SmoothL1loss` - epoch30 | 44.47 %  |
+| `custom_cGAN_SmoothL1loss` - epoch100| 62.13 %  |
+| `custom_cGAN_2` - epoch30            | 22.38 %  |
+| `custom_cGAN_2` - epoch100           | 24.77 %  |
 
 ### Augmentation
 
@@ -73,3 +89,11 @@ Here are the obtained values.
 | `basic_wGAN` - epoch100              | 80.30 %  |
 | `cGAN_64_bs128` - epoch30            | 81.11 %  |
 | `cGAN_64_bs128` - epoch100           | 80.87 %  |
+| `custom_cGAN` - epoch30              | 79.39 %  |
+| `custom_cGAN` - epoch100             | 79.91 %  |
+| `custom_wGAN` - epoch30              | 79.15 %  |
+| `custom_wGAN` - epoch100             | 79.86 %  |
+| `custom_cGAN_SmoothL1loss` - epoch30 | 78.92 %  |
+| `custom_cGAN_SmoothL1loss` - epoch100| 79.61 %  |
+| `custom_cGAN_2` - epoch30            | 80.04 %  |
+| `custom_cGAN_2` - epoch100           | 80.91 %  |
