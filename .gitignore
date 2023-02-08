@@ -3,3 +3,6 @@ __pycache__/
 
 # Exclude launch bash file
 launch.sh
+
+# tmp
+resnet_*
