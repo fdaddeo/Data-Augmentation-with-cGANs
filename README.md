@@ -1,6 +1,42 @@
 # Data Augmentation with cGAN
 
-Project on going. TODO
+## Requirements
+
+- `Pytorch`
+- `Numpy`
+- `Pandas`
+- `Seaborn`
+- `Sklearn`
+
+## CGAN training
+
+To train the CGAN is necessary to create a configuration file and then execute:
+
+`python3 -m train_cgan --run_name <model name> --config <path/to/configuration/file.yaml>`
+
+NOTE: examples of configuration file are contained in `config/cgan/` folder.
+
+## CGAN testing
+
+To test the CGAN execute:
+
+`python3 -m test_cgan --config <path/to/configuration/file.yaml>`
+
+NOTE: it's required the same configuration file used during the training.
+
+## Classificator training
+
+To train and test the classificator it's required to create a configuration file and then execute:
+
+`python3 -m train_classifier --run_name <model name> --config <path/to/configuration/file.yaml>`
+
+NOTE: examples of configuration file are contained in `config/classifier/` folder.
+
+## Results visualization
+
+To visualize the obtained results, both for CGAN and classifier, execute:
+
+`tensorboard --logdir=<path/to/tensorboard/folder/>`
 
 ## FID scores registered
 
@@ -36,7 +72,7 @@ Here are the obtained values.
 
 ## Accuracy registered
 
-Each generated dataset has been used to perform a classification task. So, it has been performed a fine tuning last 5 epochs over a pretrained AlexNet. The training has been performed usign the generated datasets both as training set and as an augmentation of the original CIFAR10 training set, for which has been used the 70% of images. The reference value for the accuracy of the original AlexNet was 9.1 %.
+Each generated dataset has been used to perform a classification task. So, it has been performed a fine tuning last 5 epochs over a pretrained AlexNet. The training has been performed using the generated datasets both as training set and as augmentation of the original CIFAR10 training set, for which has been used the 70% of images. The reference value for the accuracy over the original AlexNet was 9.1 %.
 
 Here are the obtained values.
 
