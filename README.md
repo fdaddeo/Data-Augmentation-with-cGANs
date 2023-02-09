@@ -24,7 +24,7 @@ To test the CGAN execute:
 
 `python3 -m test_cgan --config <path/to/configuration/file.yaml>`
 
-NOTE: it's required the same configuration file used during the training.
+NOTE: for each model specify the same configuration file used during its training.
 
 ## Classificator 
 
@@ -35,6 +35,16 @@ To train and test the classificator it's required to create a configuration file
 `python3 -m train_classifier --run_name <model name> --config <path/to/configuration/file.yaml>`
 
 NOTE: examples of configuration file are contained in `config/classifier/` folder.
+
+### Testing
+
+To test a classificator model execute:
+
+`python3 -m test_classifier --model_name <model name> --config <path/to/configuration/file.yaml>`
+
+NOTES: 
+- For each model specify the same configuration file used during its training;
+- As model name specify only the file name and do not write the complete path.
 
 ## Results 
 
@@ -63,6 +73,8 @@ Here are the obtained values.
 | `basic_cGAN_SGD` - epoch100          | 214.799    | 365.356  | 308.137    | 356.645 | 316.402 | 296.593 | 317.441 | 316.219 | 306.465 | 302.288 | 367.789 |
 | `basic_cGAN_SmoothL1loss` - epoch30  | 25.2347    | 47.6879  | 47.8939    | 51.5360 | 38.2146 | 45.1380 | 56.9448 | 40.9715 | 56.9873 | 44.1011 | 51.9278 |
 | `basic_cGAN_SmoothL1loss` - epoch100 | 17.5960    | 36.6824  | 44.6527    | 39.5682 | 27.6457 | 33.0219 | 43.7501 | 31.2807 | 35.8994 | 35.7174 | 44.7159 |
+| `cGAN_SmoothL1loss_Adamax` - epoch30 | 56.9044    | 75.2484  | 105.268    | 85.8292 | 85.4688 | 86.5913 | 103.241 | 86.7148 | 128.169 | 64.7571 | 86.9369 |
+| `cGAN_SmoothL1loss_Adamax` - epoch100| 29.5539    | 47.2033  | 83.6270    | 53.9002 | 45.3708 | 44.6316 | 57.7528 | 60.4991 | 59.0338 | 62.2606 | 66.2551 |
 | `basic_wGAN` - epoch30               | 48.2562    | 68.4371  | 75.0996    | 71.9104 | 54.4870 | 83.9637 | 81.9094 | 84.2123 | 83.1763 | 54.3745 | 72.1841 |
 | `basic_wGAN` - epoch100              | 28.1914    | 54.6635  | 58.3065    | 49.8910 | 38.9040 | 37.1997 | 52.3032 | 38.4660 | 42.6299 | 41.8378 | 53.9019 |
 | `cGAN_64_bs128` - epoch30            | 204.184    | 222.695  | 228.378    | 349.715 | 283.556 | 274.376 | 255.650 | 265.553 | 235.954 | 249.086 | 310.055 |
@@ -98,6 +110,8 @@ Here are the obtained values.
 | `basic_cGAN_SGD` - epoch100          | 15.75 %  |
 | `basic_cGAN_SmoothL1loss` - epoch30  | 55.27 %  |
 | `basic_cGAN_SmoothL1loss` - epoch100 | 63.26 %  |
+| `cGAN_SmoothL1loss_Adamax` - epoch30 | 24.39 %  |
+| `cGAN_SmoothL1loss_Adamax` - epoch100| 38.45 %  | 
 | `basic_wGAN` - epoch30               | 52.54 %  |
 | `basic_wGAN` - epoch100              | 66.28 %  |
 | `cGAN_64_bs128` - epoch30            | 16.97 %  |
@@ -127,6 +141,8 @@ Here are the obtained values.
 | `basic_cGAN_SGD` - epoch100          | 81.39 %  |
 | `basic_cGAN_SmoothL1loss` - epoch30  | 78.98 %  |
 | `basic_cGAN_SmoothL1loss` - epoch100 | 80.08 %  |
+| `cGAN_SmoothL1loss_Adamax` - epoch30 | 80.12 %  |
+| `cGAN_SmoothL1loss_Adamax` - epoch100| 79.78 %  |
 | `basic_wGAN` - epoch30               | 79.23 %  |
 | `basic_wGAN` - epoch100              | 80.30 %  |
 | `cGAN_64_bs128` - epoch30            | 81.11 %  |
