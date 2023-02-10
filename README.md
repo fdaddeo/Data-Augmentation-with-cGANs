@@ -73,6 +73,8 @@ Here are the obtained values.
 | `basic_cGAN_SGD` - epoch100          | 214.799    | 365.356  | 308.137    | 356.645 | 316.402 | 296.593 | 317.441 | 316.219 | 306.465 | 302.288 | 367.789 |
 | `basic_cGAN_SmoothL1loss` - epoch30  | 25.2347    | 47.6879  | 47.8939    | 51.5360 | 38.2146 | 45.1380 | 56.9448 | 40.9715 | 56.9873 | 44.1011 | 51.9278 |
 | `basic_cGAN_SmoothL1loss` - epoch100 | 17.5960    | 36.6824  | 44.6527    | 39.5682 | 27.6457 | 33.0219 | 43.7501 | 31.2807 | 35.8994 | 35.7174 | 44.7159 |
+| `cGAN_SmoothL1loss_bs128` - epoch30  | 28.8892    | 50.3035  | 65.5648    | 53.7833 | 37.6564 | 45.9779 | 58.8280 | 45.3261 | 62.7498 | 51.2253 | 93.3664 |
+| `cGAN_SmoothL1loss_bs128` - epoch100 | 18.4161    | 37.6183  | 52.4211    | 39.3867 | 30.0114 | 30.3955 | 42.6866 | 30.4660 | 39.6675 | 36.7077 | 84.9438 |
 | `cGAN_SmoothL1loss_Adamax` - epoch30 | 56.9044    | 75.2484  | 105.268    | 85.8292 | 85.4688 | 86.5913 | 103.241 | 86.7148 | 128.169 | 64.7571 | 86.9369 |
 | `cGAN_SmoothL1loss_Adamax` - epoch100| 29.5539    | 47.2033  | 83.6270    | 53.9002 | 45.3708 | 44.6316 | 57.7528 | 60.4991 | 59.0338 | 62.2606 | 66.2551 |
 | `basic_wGAN` - epoch30               | 48.2562    | 68.4371  | 75.0996    | 71.9104 | 54.4870 | 83.9637 | 81.9094 | 84.2123 | 83.1763 | 54.3745 | 72.1841 |
@@ -110,6 +112,8 @@ Here are the obtained values.
 | `basic_cGAN_SGD` - epoch100          | 15.75 %  |
 | `basic_cGAN_SmoothL1loss` - epoch30  | 55.27 %  |
 | `basic_cGAN_SmoothL1loss` - epoch100 | 63.26 %  |
+| `cGAN_SmoothL1loss_bs128` - epoch30  | 29.02 %  |
+| `cGAN_SmoothL1loss_bs128` - epoch100 | 64.05 %  |
 | `cGAN_SmoothL1loss_Adamax` - epoch30 | 24.39 %  |
 | `cGAN_SmoothL1loss_Adamax` - epoch100| 38.45 %  | 
 | `basic_wGAN` - epoch30               | 52.54 %  |
@@ -141,6 +145,8 @@ Here are the obtained values.
 | `basic_cGAN_SGD` - epoch100          | 81.39 %  |
 | `basic_cGAN_SmoothL1loss` - epoch30  | 78.98 %  |
 | `basic_cGAN_SmoothL1loss` - epoch100 | 80.08 %  |
+| `cGAN_SmoothL1loss_bs128` - epoch30  | 80.35 %  |
+| `cGAN_SmoothL1loss_bs128` - epoch100 | 79.46 %  |
 | `cGAN_SmoothL1loss_Adamax` - epoch30 | 80.12 %  |
 | `cGAN_SmoothL1loss_Adamax` - epoch100| 79.78 %  |
 | `basic_wGAN` - epoch30               | 79.23 %  |
