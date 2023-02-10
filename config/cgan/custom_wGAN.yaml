@@ -37,7 +37,7 @@ gen_model_path: ../results/custom_wGAN/Models/Generator/generator_custom_wGAN_ep
 
 # Data settings
 image_size: 32                                                                                        # Dimension of the images.
-batch_size: 128                                                                                       # Dimension of the batch.
+batch_size: 64                                                                                        # Dimension of the batch.
 image_channels: 3                                                                                     # Number of channels in the input images.
 num_label: 10                                                                                         # Number of labels.
 classes: ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']   # Specify the class names.
