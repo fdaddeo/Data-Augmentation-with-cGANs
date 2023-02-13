@@ -45,7 +45,7 @@ class Tester(object):
                 raise Exception(f"Image size {self.config['image_size']} not implemented. Please fix the configuration file.")
 
         # Load trained models
-        self.generator.load_state_dict(torch.load(self.config['gen_model_path']))
+        self.generator.load_state_dict(torch.load(self.config['gen_model_path'], map_location=self.device))
 
         # Define a fixed noise to be used as starting point for generation
         self.fixed_noise = torch.randn(self.config['class_images'], self.config['gen']['latentspace_dim'], 1, 1, device=device)

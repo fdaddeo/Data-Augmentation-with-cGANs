@@ -46,7 +46,7 @@ class Tester(object):
         else:
             raise Exception(f"Model {self.config['model']} not implemented. Please fix the configuration file.")
 
-        self.model.load_state_dict(torch.load(os.path.join(self.config['model_path'], self.args.model_name)))
+        self.model.load_state_dict(torch.load(os.path.join(self.config['model_path'], self.args.model_name), map_location=self.device))
         
         self.model.to(self.device)
 
