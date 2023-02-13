@@ -77,6 +77,8 @@ Here are the obtained values.
 | `cGAN_SmoothL1loss_bs128` - epoch100 | 18.4161    | 37.6183  | 52.4211    | 39.3867 | 30.0114 | 30.3955 | 42.6866 | 30.4660 | 39.6675 | 36.7077 | 84.9438 |
 | `cGAN_SmoothL1loss_Adamax` - epoch30 | 56.9044    | 75.2484  | 105.268    | 85.8292 | 85.4688 | 86.5913 | 103.241 | 86.7148 | 128.169 | 64.7571 | 86.9369 |
 | `cGAN_SmoothL1loss_Adamax` - epoch100| 29.5539    | 47.2033  | 83.6270    | 53.9002 | 45.3708 | 44.6316 | 57.7528 | 60.4991 | 59.0338 | 62.2606 | 66.2551 |
+| `cGAN_SmoothL1loss_NAdam` - epoch30  | 26.9565    | 43.4741  | 53.5850    | 56.4188 | 41.4548 | 46.8531 | 64.0583 | 68.0111 | 59.6425 | 34.2241 | 53.8282 |
+| `cGAN_SmoothL1loss_NAdam` - epoch100 | 20.2487    | 39.7137  | 44.5671    | 44.1415 | 32.1569 | 34.8685 | 47.4983 | 72.6950 | 40.1842 | 39.2248 | 43.1007 |
 | `basic_wGAN` - epoch30               | 48.2562    | 68.4371  | 75.0996    | 71.9104 | 54.4870 | 83.9637 | 81.9094 | 84.2123 | 83.1763 | 54.3745 | 72.1841 |
 | `basic_wGAN` - epoch100              | 28.1914    | 54.6635  | 58.3065    | 49.8910 | 38.9040 | 37.1997 | 52.3032 | 38.4660 | 42.6299 | 41.8378 | 53.9019 |
 | `cGAN_64_bs128` - epoch30            | 204.184    | 222.695  | 228.378    | 349.715 | 283.556 | 274.376 | 255.650 | 265.553 | 235.954 | 249.086 | 310.055 |
@@ -98,66 +100,82 @@ Here are the obtained values.
 
 #### No Augmentation
 
-| RunName                              | Accuracy |
-|:-------------------------------------|  :---:   |
-| `basic_cGAN` - epoch30               | 57.75 %  |
-| `basic_cGAN` - epoch100              | 63.66 %  |
-| `basic_cGAN_BCEWithLogits` - epoch30 | 57.36 %  |
-| `basic_cGAN_BCEWithLogits` - epoch100| 62.76 %  |
-| `basic_cGAN_NOINIT` - epoch30        | 55.90 %  |
-| `basic_cGAN_NOINIT` - epoch100       | 61.26 %  |
-| `basic_cGAN_NONORM` - epoch30        | 52.05 %  |
-| `basic_cGAN_NONORM` - epoch100       | 63.38 %  |
-| `basic_cGAN_SGD` - epoch30           |  9.86 %  |
-| `basic_cGAN_SGD` - epoch100          | 15.75 %  |
-| `basic_cGAN_SmoothL1loss` - epoch30  | 55.27 %  |
-| `basic_cGAN_SmoothL1loss` - epoch100 | 63.26 %  |
-| `cGAN_SmoothL1loss_bs128` - epoch30  | 29.02 %  |
-| `cGAN_SmoothL1loss_bs128` - epoch100 | 64.05 %  |
-| `cGAN_SmoothL1loss_Adamax` - epoch30 | 24.39 %  |
-| `cGAN_SmoothL1loss_Adamax` - epoch100| 38.45 %  | 
-| `basic_wGAN` - epoch30               | 52.54 %  |
-| `basic_wGAN` - epoch100              | 66.28 %  |
-| `cGAN_64_bs128` - epoch30            | 16.97 %  |
-| `cGAN_64_bs128` - epoch100           | 26.91 %  |
-| `custom_cGAN` - epoch30              | 42.74 %  |
-| `custom_cGAN` - epoch100             | 57.42 %  |
-| `custom_wGAN` - epoch30              | 35.85 %  |
-| `custom_wGAN` - epoch100             | 54.04 %  |
-| `custom_cGAN_SmoothL1loss` - epoch30 | 44.47 %  |
-| `custom_cGAN_SmoothL1loss` - epoch100| 62.13 %  |
-| `custom_cGAN_2` - epoch30            | 22.38 %  |
-| `custom_cGAN_2` - epoch100           | 24.77 %  |
+| RunName                                           | Accuracy |
+|:--------------------------------------------------|  :---:   |
+| `basic_cGAN` - epoch30                            | 57.75 %  |
+| `basic_cGAN` - epoch100                           | 63.66 %  |
+| `basic_cGAN_BCEWithLogits` - epoch30              | 57.36 %  |
+| `basic_cGAN_BCEWithLogits` - epoch100             | 62.76 %  |
+| `basic_cGAN_NOINIT` - epoch30                     | 55.90 %  |
+| `basic_cGAN_NOINIT` - epoch100                    | 61.26 %  |
+| `basic_cGAN_NONORM` - epoch30                     | 52.05 %  |
+| `basic_cGAN_NONORM` - epoch100                    | 63.38 %  |
+| `basic_cGAN_SGD` - epoch30                        |  9.86 %  |
+| `basic_cGAN_SGD` - epoch100                       | 15.75 %  |
+| `basic_cGAN_SmoothL1loss` - epoch30               | 55.27 %  |
+| `basic_cGAN_SmoothL1loss` - epoch100              | 63.26 %  |
+| `adamax_bs128_basic_cGAN_SmoothL1loss` - epoch30  | 54.93 %  |
+| `adamax_bs128_basic_cGAN_SmoothL1loss` - epoch100 | 54.91 %  |
+| `adamax_basic_cGAN_SmoothL1loss` - epoch30        | 54.92 %  |
+| `adamax_basic_cGAN_SmoothL1loss` - epoch100       | 64.27 %  |
+| `nadam_basic_cGAN_SmoothL1loss` - epoch30         | 53.20 %  |
+| `nadam_basic_cGAN_SmoothL1loss` - epoch100        | 60.84 %  |
+| `cGAN_SmoothL1loss_bs128` - epoch30               | 29.02 %  |
+| `cGAN_SmoothL1loss_bs128` - epoch100              | 64.05 %  |
+| `cGAN_SmoothL1loss_Adamax` - epoch30              | 24.39 %  |
+| `cGAN_SmoothL1loss_Adamax` - epoch100             | 38.45 %  |
+| `adamax_basic_cGAN_SmoothL1loss_NAdam` - epoch30  | 54.75 %  |
+| `adamax_basic_cGAN_SmoothL1loss_NAdam` - epoch100 | 56.96 %  | 
+| `basic_wGAN` - epoch30                            | 52.54 %  |
+| `basic_wGAN` - epoch100                           | 66.28 %  |
+| `cGAN_64_bs128` - epoch30                         | 16.97 %  |
+| `cGAN_64_bs128` - epoch100                        | 26.91 %  |
+| `custom_cGAN` - epoch30                           | 42.74 %  |
+| `custom_cGAN` - epoch100                          | 57.42 %  |
+| `custom_wGAN` - epoch30                           | 35.85 %  |
+| `custom_wGAN` - epoch100                          | 54.04 %  |
+| `custom_cGAN_SmoothL1loss` - epoch30              | 44.47 %  |
+| `custom_cGAN_SmoothL1loss` - epoch100             | 62.13 %  |
+| `custom_cGAN_2` - epoch30                         | 22.38 %  |
+| `custom_cGAN_2` - epoch100                        | 24.77 %  |
 
 #### Augmentation
 
-| RunName                              | Accuracy |
-|:-------------------------------------|  :---:   |
-| `basic_cGAN` - epoch30               | 80.13 %  |
-| `basic_cGAN` - epoch100              | 78.99 %  |
-| `basic_cGAN_BCEWithLogits` - epoch30 | 79.29 %  |
-| `basic_cGAN_BCEWithLogits` - epoch100| 78.66 %  |
-| `basic_cGAN_NOINIT` - epoch30        | 78.81 %  |
-| `basic_cGAN_NOINIT` - epoch100       | 79.85 %  |
-| `basic_cGAN_NONORM` - epoch30        | 79.77 %  |
-| `basic_cGAN_NONORM` - epoch100       | 80.48 %  |
-| `basic_cGAN_SGD` - epoch30           | 81.80 %  |
-| `basic_cGAN_SGD` - epoch100          | 81.39 %  |
-| `basic_cGAN_SmoothL1loss` - epoch30  | 78.98 %  |
-| `basic_cGAN_SmoothL1loss` - epoch100 | 80.08 %  |
-| `cGAN_SmoothL1loss_bs128` - epoch30  | 80.35 %  |
-| `cGAN_SmoothL1loss_bs128` - epoch100 | 79.46 %  |
-| `cGAN_SmoothL1loss_Adamax` - epoch30 | 80.12 %  |
-| `cGAN_SmoothL1loss_Adamax` - epoch100| 79.78 %  |
-| `basic_wGAN` - epoch30               | 79.23 %  |
-| `basic_wGAN` - epoch100              | 80.30 %  |
-| `cGAN_64_bs128` - epoch30            | 81.11 %  |
-| `cGAN_64_bs128` - epoch100           | 80.87 %  |
-| `custom_cGAN` - epoch30              | 79.39 %  |
-| `custom_cGAN` - epoch100             | 79.91 %  |
-| `custom_wGAN` - epoch30              | 79.15 %  |
-| `custom_wGAN` - epoch100             | 79.86 %  |
-| `custom_cGAN_SmoothL1loss` - epoch30 | 78.92 %  |
-| `custom_cGAN_SmoothL1loss` - epoch100| 79.61 %  |
-| `custom_cGAN_2` - epoch30            | 80.04 %  |
-| `custom_cGAN_2` - epoch100           | 80.91 %  |
+| RunName                                           | Accuracy |
+|:--------------------------------------------------|  :---:   |
+| `basic_cGAN` - epoch30                            | 80.13 %  |
+| `basic_cGAN` - epoch100                           | 78.99 %  |
+| `basic_cGAN_BCEWithLogits` - epoch30              | 79.29 %  |
+| `basic_cGAN_BCEWithLogits` - epoch100             | 78.66 %  |
+| `basic_cGAN_NOINIT` - epoch30                     | 78.81 %  |
+| `basic_cGAN_NOINIT` - epoch100                    | 79.85 %  |
+| `basic_cGAN_NONORM` - epoch30                     | 79.77 %  |
+| `basic_cGAN_NONORM` - epoch100                    | 80.48 %  |
+| `basic_cGAN_SGD` - epoch30                        | 81.80 %  |
+| `basic_cGAN_SGD` - epoch100                       | 81.39 %  |
+| `basic_cGAN_SmoothL1loss` - epoch30               | 78.98 %  |
+| `basic_cGAN_SmoothL1loss` - epoch100              | 80.08 %  |
+| `adamax_basic_cGAN_SmoothL1loss` - epoch30        | 81.38 %  |
+| `adamax_basic_cGAN_SmoothL1loss` - epoch100       | 81.50 %  |
+| `nadam_basic_cGAN_SmoothL1loss` - epoch30         | 79.81 %  |
+| `nadam_basic_cGAN_SmoothL1loss` - epoch100        | 78.83 %  |
+| `adamax_bs128_basic_cGAN_SmoothL1loss` - epoch30  | 81.47 %  |
+| `adamax_bs128_basic_cGAN_SmoothL1loss` - epoch100 | 81.59 %  |
+| `cGAN_SmoothL1loss_bs128` - epoch30               | 80.35 %  |
+| `cGAN_SmoothL1loss_bs128` - epoch100              | 79.46 %  |
+| `cGAN_SmoothL1loss_Adamax` - epoch30              | 80.12 %  |
+| `cGAN_SmoothL1loss_Adamax` - epoch100             | 79.78 %  |
+| `adamax_basic_cGAN_SmoothL1loss_NAdam` - epoch30  | 81.68 %  |
+| `adamax_basic_cGAN_SmoothL1loss_NAdam` - epoch100 | 81.91 %  |
+| `basic_wGAN` - epoch30                            | 79.23 %  |
+| `basic_wGAN` - epoch100                           | 80.30 %  |
+| `cGAN_64_bs128` - epoch30                         | 81.11 %  |
+| `cGAN_64_bs128` - epoch100                        | 80.87 %  |
+| `custom_cGAN` - epoch30                           | 79.39 %  |
+| `custom_cGAN` - epoch100                          | 79.91 %  |
+| `custom_wGAN` - epoch30                           | 79.15 %  |
+| `custom_wGAN` - epoch100                          | 79.86 %  |
+| `custom_cGAN_SmoothL1loss` - epoch30              | 78.92 %  |
+| `custom_cGAN_SmoothL1loss` - epoch100             | 79.61 %  |
+| `custom_cGAN_2` - epoch30                         | 80.04 %  |
+| `custom_cGAN_2` - epoch100                        | 80.91 %  |
