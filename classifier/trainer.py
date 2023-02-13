@@ -78,6 +78,8 @@ class FineTune(object):
         # Define Optimizer
         if self.config['optimizer'] == 'Adam':
             self.optimizer = optim.Adam(self.model.parameters(), lr=self.config['learning_rate'], betas=(self.config['beta'], 0.999))
+        elif self.config['optimizer'] == 'Adamax':
+            self.optimizer = optim.Adamax(self.model.parameters(), lr=self.config['learning_rate'], betas=(self.config['beta'], 0.999))
         elif self.config['optimizer'] == 'SGD':
             self.optimizer = optim.SGD(self.model.parameters(), lr=self.config['learning_rate'], momentum=0.9)
         else:
